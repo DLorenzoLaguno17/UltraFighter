@@ -1,0 +1,153 @@
+<animations>
+  <player>
+    <idle loop="true" speed="15.0f">
+      <animation x="2" y="184" w="22" h="25"/>
+      <animation x="33" y="184" w="24" h="25"/>
+      <animation x="65" y="184" w="24" h="25"/>
+      <animation x="97" y="184" w="24" h="25"/>
+      <animation x="130" y="184" w="22" h="25"/>
+      <animation x="163" y="184" w="21" h="25"/>
+    </idle>
+
+    <run loop="true" speed="18.0f">
+      <animation x="1" y="96" w="23" h="25"/>
+      <animation x="32" y="99" w="25" h="25"/>
+      <animation x="65" y="99" w="23" h="25"/>
+      <animation x="100" y="98" w="20" h="25"/>
+      <animation x="133" y="97" w="20" h="25"/>
+      <animation x="165" y="99" w="17" h="25"/>
+      <animation x="199" y="99" w="18" h="25"/>
+      <animation x="228" y="98" w="20" h="25"/>
+    </run>
+
+    <jump loop="true" speed="12.0f">
+      <animation x="2" y="158" w="20" h="25"/>
+      <animation x="34" y="158" w="20" h="25"/>
+    </jump>
+
+    <fall loop="true" speed="12.0f">
+      <animation x="87" y="157" w="22" h="26"/>
+      <animation x="119" y="157" w="22" h="26"/>
+    </fall>
+	
+	<godmode loop="true" speed="7.5f">	
+      <animation x="85" y="34" w="29" h="27"/>
+      <animation x="118" y="34" w="28" h="27"/>
+	</godmode>
+
+    <attackRight loop="false" speed="20.0f">
+      <animation x="1" y="271" w="29" h="29"/>
+      <animation x="64" y="271" w="29" h="29"/>
+      <animation x="135" y="271" w="35" h="29"/>
+      <animation x="198" y="271" w="40" h="29"/>
+      <animation x="253" y="271" w="42" h="29"/>
+    </attackRight>
+	
+    <attackLeft loop="false" speed="20.0f">
+      <animation x="266" y="123" w="42" h="27"/>
+      <animation x="266" y="151" w="42" h="27"/>
+      <animation x="246" y="180" w="42" h="27"/>
+      <animation x="246" y="209" w="42" h="27"/>
+      <animation x="246" y="239" w="42" h="27"/>
+    </attackLeft>
+	
+	<throwHook loop="false" speed="38.0f">
+      <animation x="1" y="2" w="66" h="23"/>
+      <animation x="1" y="26" w="66" h="23"/>
+      <animation x="1" y="50" w="66" h="23"/>
+      <animation x="1" y="74" w="66" h="23"/>
+      <animation x="1" y="98" w="66" h="23"/>
+      <animation x="1" y="122" w="66" h="23"/>
+      <animation x="1" y="146" w="66" h="23"/>
+      <animation x="1" y="170" w="66" h="23"/>
+      <animation x="1" y="194" w="66" h="23"/>
+      <animation x="1" y="218" w="66" h="23"/>
+    </throwHook>
+	
+	<returnHook loop="false" speed="38.0f">
+      <animation x="1" y="194" w="66" h="23"/>
+      <animation x="1" y="170" w="66" h="23"/>
+      <animation x="1" y="146" w="66" h="23"/>
+      <animation x="1" y="122" w="66" h="23"/>
+      <animation x="1" y="98" w="66" h="23"/>
+      <animation x="1" y="74" w="66" h="23"/>
+      <animation x="1" y="50" w="66" h="23"/>
+      <animation x="1" y="26" w="66" h="23"/>
+      <animation x="1" y="2" w="66" h="23"/>
+	</returnHook>
+	
+	<dragHookRight loop="false" speed="33.0f">
+      <animation x="1" y="423" w="66" h="23"/>
+      <animation x="8" y="399" w="59" h="23"/>
+      <animation x="15" y="375" w="52" h="23"/>
+      <animation x="22" y="351" w="45" h="23"/>
+      <animation x="29" y="327" w="38" h="23"/>
+      <animation x="36" y="303" w="31" h="23"/>
+      <animation x="43" y="279" w="24" h="23"/>
+      <animation x="50" y="255" w="17" h="23"/>
+	</dragHookRight>
+	
+	<dragHookLeft loop="false" speed="33.0f">
+      <animation x="73" y="423" w="66" h="23"/>
+      <animation x="73" y="399" w="59" h="23"/>
+      <animation x="73" y="375" w="52" h="23"/>
+      <animation x="73" y="351" w="45" h="23"/>
+      <animation x="73" y="327" w="38" h="23"/>
+      <animation x="73" y="303" w="31" h="23"/>
+      <animation x="73" y="279" w="24" h="23"/>
+      <animation x="73" y="255" w="17" h="23"/>
+	</dragHookLeft>
+	
+	<death loop="false" speed="10.0f">
+      <animation x="1" y="128" w="30" h="28"/>
+      <animation x="34" y="128" w="30" h="28"/>
+      <animation x="69" y="128" w="30" h="28"/>
+      <animation x="119" y="128" w="30" h="28"/>
+      <animation x="169" y="128" w="30" h="28"/>
+      <animation x="219" y="128" w="30" h="28"/>
+      <animation x="0" y="0" w="0" h="0"/>
+	</death>
+</player>
+  
+  <enemies>    
+    <harpy>      
+      <move loop ="true" speed="10.0f">
+        <animation x="32" y="25" w="38" h="34"/>
+        <animation x="80" y="25" w="38" h="34"/>
+        <animation x="125" y="25" w="44" h="34"/>
+        <animation x="175" y="25" w="40" h="34"/>
+        <animation x="58" y="67" w="38" h="29"/>
+        <animation x="98" y="67" w="46" h="29"/>
+        <animation x="148" y="67" w="41" h="29"/>
+      </move>
+
+      <idle loop ="true" speed="10.0f">
+        <animation x="42" y="145" w="38" h="34"/>
+        <animation x="90" y="145" w="38" h="34"/>
+        <animation x="135" y="145" w="44" h="34"/>
+        <animation x="185" y="145" w="40" h="34"/>
+        <animation x="68" y="192" w="38" h="29"/>
+        <animation x="108" y="192" w="46" h="29"/>
+        <animation x="158" y="192" w="41" h="29"/>
+      </idle>      
+    </harpy>
+	
+	  <skeleton>
+	    <move loop ="true" speed="1.0f">
+         <animation x="30" y="89" w="13" h="22"/>
+         <animation x="47" y="89" w="13" h="22"/>
+         <animation x="64" y="89" w="13" h="22"/>
+        <animation x="81" y="89" w="13" h="22"/>
+      </move>
+
+      <idle loop ="true" speed="1.0f">
+        <animation x="13" y="14" w="22" h="22"/>
+        <animation x="37" y="14" w="13" h="22"/>
+        <animation x="52" y="13" w="16" h="22"/>
+        <animation x="37" y="14" w="13" h="22"/>
+      </idle>
+	  </skeleton>
+    
+  </enemies>
+
+</animations>

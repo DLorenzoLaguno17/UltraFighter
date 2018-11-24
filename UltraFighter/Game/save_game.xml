@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<game_state>
+	<input />
+	<window />
+	<textures />
+	<audio />
+	<map />
+	<pathfinding />
+	<scene1>
+		<activated true="false" />
+	</scene1>
+	<scene2>
+		<activated true="true" />
+	</scene2>
+	<entityManager>
+		<player>
+			<position x="2256" y="105" />
+			<godmode value="false" />
+		</player>
+		<harpy>
+			<position x="150" y="20" />
+			<position x="150" y="20" />
+		</harpy>
+		<skeleton />
+	</entityManager>
+	<fade />
+	<collisions />
+	<renderer>
+		<camera x="-8575" y="0" />
+	</renderer>
+</game_state>

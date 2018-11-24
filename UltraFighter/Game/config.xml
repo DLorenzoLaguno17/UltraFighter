@@ -1,0 +1,73 @@
+<!-- Config file for the game -->
+
+<config>
+  <app framerate_cap="60">
+    <title>The Cliffborn Islands v0.2</title>
+    <organization>UPC</organization>
+  </app>
+	
+  <renderer>
+    <vsync value="false"/>
+	<camera initialX="0" initialY="0"/>
+  </renderer>
+
+  <window>
+    <resolution width="1024" height="768" scale="4"/>
+    <fullscreen value="false"/>
+    <borderless value="false"/>
+    <resizable value="true"/>
+    <fullscreen_window value="false"/>
+  </window>  
+  
+  <file_system>
+    <path>data.zip</path>
+  </file_system>
+  
+  <player>
+	<size width="18" height="23"/>
+	<margin x="2" y="2" colisionMargin="3"/>
+	<deathByFallCollider h="8"/>
+	<speed>
+	  <movement initialVertical="-150.0f" vertical="-150.0f" horizontal="80.0f" godmode="120.0f"/>
+	  <physics initialFalling="0.0f" falling="0.0f" acceleration="550.0f"  jumpNumber="0" maxJumps="2"/>
+	</speed>
+	<attack blittingX="-15" blittingY="-2" rightColliderSpawnPos="20" leftColliderSpawnPos="-16"/>
+  </player>
+  
+  <hook speed="200" leftMargin="57">
+	  <spawnPositionRight x="11" y="3"/>
+	  <spawnPositionLeft x="-52" y="3"/>
+	  <collider colliderPosition="0" heightMargin="5"/>
+	  <size width="11" height="13"/>
+  </hook>
+  
+  <entityManager updateMsCycle="0.1f"/>
+  
+  <harpy speed="70.0f">
+	  <initialPosition x="200" y="20"/>
+	  <margin x="10" y="10"/>
+	  <colliderSize w="25" h="23"/>
+  </harpy>
+  
+  <skeleton speed="50.0f">
+      <initialPosition x="200" y="20"/>
+	  <margin x="10" y="10"/>
+	  <colliderSize w="13" h="22"/>
+  </skeleton>
+
+  <map>
+	<blitSpeed backgrounds="0.7f" fog="0.85f" map="1.0f"/>
+    <folder>maps/</folder>
+  </map>  
+  
+  <scene1>
+	<camera cameraLimit="-8570" playerLimit="2374"/>
+	<initialPlayerPosition x="1" y="25"/>
+  </scene1>
+  
+  <scene2>  
+	<initialPlayerPosition x="1" y="56"/>
+	<camera cameraLimit="-8570" playerLimit="2374"/>
+  </scene2>
+
+</config>

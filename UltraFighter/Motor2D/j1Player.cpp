@@ -87,21 +87,30 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 			animation = &godmode;
 
-			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT) {
+			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT 
+				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) == 1
+				|| App->input->gamepadP1LAxisX > 6400) {
 				position.x += godModeSpeed * dt;
 				facingRight = true;
 			}
 
-			if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT) {
+			if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT 
+				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) == 1
+				|| App->input->gamepadP1LAxisX < -6400) {
 				position.x -= godModeSpeed * dt;
 				facingRight = false;
 			}
 
-			if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT) {
+			if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT
+				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) == 1
+				|| App->input->gamepadP1LAxisY < -6400)
+			{
 				position.y -= godModeSpeed * dt;
 			}
 
-			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT) {
+			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT 
+				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) == 1
+				|| App->input->gamepadP1LAxisY > 6400) {
 				position.y += godModeSpeed * dt;
 			}
 		}
@@ -113,7 +122,9 @@ bool j1Player::Update(float dt, bool do_logic) {
 				animation = &idle;
 
 			// Direction controls	
-			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false) {
+			if ((App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT 
+				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) == 1
+				|| App->input->gamepadP1LAxisX > 6400) && attacking == false) {
 				if (wallInFront == false && dead == false) {
 					position.x += horizontalSpeed * dt;
 					animation = &run;
@@ -128,7 +139,9 @@ bool j1Player::Update(float dt, bool do_logic) {
 					animation = &idle;
 			}
 
-			if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT && attacking == false) {
+			if ((App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT 
+				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) == 1
+				|| App->input->gamepadP1LAxisX < -6400) && attacking == false) {
 				if (wallBehind == false && dead == false) {
 					position.x -= horizontalSpeed * dt;
 					animation = &run;
@@ -199,7 +212,8 @@ bool j1Player::Update(float dt, bool do_logic) {
 		}
 
 		// Attack control
-		if (App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN && attacking == false && GodMode == false && dead == false) {
+		if ((App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN || (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_X)) == 1 )
+			&& attacking == false && GodMode == false && dead == false) {
 			attacking = true;
 			App->audio->PlayFx(attackSound);
 						

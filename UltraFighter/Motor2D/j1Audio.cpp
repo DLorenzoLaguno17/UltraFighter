@@ -7,10 +7,15 @@
 #include "SDL_mixer\include\SDL_mixer.h"
 #pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 
+#define DEFAULT_VOLUME MIX_MAX_VOLUME/2
+
 j1Audio::j1Audio() : j1Module()
 {
 	music = NULL;
 	name.create("audio");
+
+	currentfxvolume = DEFAULT_VOLUME;
+	currentmusicvolume = DEFAULT_VOLUME;
 }
 
 // Destructor
@@ -49,6 +54,9 @@ bool j1Audio::Awake(pugi::xml_node& config)
 		active = false;
 		ret = true;
 	}
+
+	MusicVolume(DEFAULT_VOLUME);
+	FxVolume(DEFAULT_VOLUME);
 
 	return ret;
 }
@@ -149,6 +157,7 @@ unsigned int j1Audio::LoadFx(const char* path)
 	}
 	else
 	{
+		Mix_VolumeChunk(chunk, currentfxvolume);
 		fx.add(chunk);
 		ret = fx.count();
 	}
@@ -170,4 +179,40 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 	}
 
 	return ret;
+}
+
+void j1Audio::MusicVolume(float vol)
+{
+	if (vol > MIX_MAX_VOLUME) 
+		vol = MIX_MAX_VOLUME; 
+	
+	else if (vol < -MIX_MAX_VOLUME)
+		vol = -MIX_MAX_VOLUME;
+
+	Mix_VolumeMusic(vol);
+	currentmusicvolume = vol;
+}
+
+void j1Audio::FxVolume(float vol)
+{
+	if (vol > MIX_MAX_VOLUME) 
+		vol = MIX_MAX_VOLUME; 
+
+	p2List_item<Mix_Chunk*>* fx_list;
+	
+	for (fx_list = fx.start; fx_list != NULL; fx_list = fx_list->next)
+	{
+		Mix_VolumeChunk(fx_list->data, vol);
+	}
+	currentfxvolume = vol;
+}
+
+float j1Audio::GetFxVolume()  
+{
+	return currentfxvolume;
+}
+
+float j1Audio::GetMusicVolume()  
+{
+	return currentmusicvolume;
 }

@@ -7,8 +7,13 @@
 #include "j1Player.h"
 #include "j1Render.h"
 #include "j1FadeToBlack.h"
+#include "j1Hook.h"
 #include "j1Audio.h"
 #include "j1Scene1.h"
+#include "j1Fonts.h"
+#include "j1Label.h"
+#include "j1Box.h"
+#include "j1Hud.h"
 
 #include "Brofiler/Brofiler.h"
 
@@ -42,6 +47,7 @@ bool j1Player::Start() {
 		playerHurt = App->audio->LoadFx("audio/fx/playerHurt.wav");
 		jumpSound = App->audio->LoadFx("audio/fx/jump.wav");
 		attackSound = App->audio->LoadFx("audio/fx/attack.wav");
+		lifeup = App->audio->LoadFx("audio/fx/1-up.wav");
 		loadedAudios = true;
 	}
 
@@ -50,6 +56,8 @@ bool j1Player::Start() {
 	animation = &idle;
 	currentJumps = initialJumps;
 	
+	lives = 2;
+
 	// Setting player position
 	position.x = initialPosition.x;
 	position.y = initialPosition.y;
@@ -59,6 +67,11 @@ bool j1Player::Start() {
 	else
 		collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_PLAYER, App->entity);
 	
+	attackCollider = App->collisions->AddCollider({ (int)position.x + rightAttackSpawnPos, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_NONE, App->entity);
+
+	hud = new j1Hud();
+	hud->Start();
+
 	player_start = true;
 	return true;
 }
@@ -87,32 +100,23 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 			animation = &godmode;
 
-			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT 
-				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) == 1
-				|| App->input->gamepadP1LAxisX > 6400) {
+			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT)
+			{
 				position.x += godModeSpeed * dt;
 				facingRight = true;
 			}
 
-			if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT 
-				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) == 1
-				|| App->input->gamepadP1LAxisX < -6400) {
+			if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT) 
+			{
 				position.x -= godModeSpeed * dt;
 				facingRight = false;
 			}
 
-			if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT
-				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) == 1
-				|| App->input->gamepadP1LAxisY < -6400)
-			{
+			if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT)
 				position.y -= godModeSpeed * dt;
-			}
 
-			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT 
-				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) == 1
-				|| App->input->gamepadP1LAxisY > 6400) {
+			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT) 
 				position.y += godModeSpeed * dt;
-			}
 		}
 		else {
 			// Idle
@@ -122,14 +126,10 @@ bool j1Player::Update(float dt, bool do_logic) {
 				animation = &idle;
 
 			// Direction controls	
-			if ((App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT 
-				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) == 1
-				|| App->input->gamepadP1LAxisX > 6400) && attacking == false) {
+			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false) {
 				if (wallInFront == false && dead == false) {
 					position.x += horizontalSpeed * dt;
 					animation = &run;
-
-					facingRight = true;
 				}
 				else if (dead == true) {
 					facingRight = true;
@@ -139,14 +139,10 @@ bool j1Player::Update(float dt, bool do_logic) {
 					animation = &idle;
 			}
 
-			if ((App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT 
-				|| (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) == 1
-				|| App->input->gamepadP1LAxisX < -6400) && attacking == false) {
+			if ((App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT && attacking == false)) {
 				if (wallBehind == false && dead == false) {
 					position.x -= horizontalSpeed * dt;
 					animation = &run;
-
-					facingRight = false;
 				}
 				else if (dead == true) {
 					facingRight = false;
@@ -160,8 +156,10 @@ bool j1Player::Update(float dt, bool do_logic) {
 			if (feetOnGround == false && jumping == false) {
 
 				freefall = true;
-				position.y += fallingSpeed * dt;
-				fallingSpeed += verticalAcceleration * dt;
+				if ((App->scene1->active && App->scene1->startup_time.Read() > 85)) {
+					position.y += fallingSpeed * dt;
+					fallingSpeed += verticalAcceleration * dt;
+				}
 
 				if (!attacking)
 					animation = &fall;
@@ -212,17 +210,16 @@ bool j1Player::Update(float dt, bool do_logic) {
 		}
 
 		// Attack control
-		if ((App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN || (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_X)) == 1 )
+		if ((App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN || (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_X)) == KEY_DOWN)
 			&& attacking == false && GodMode == false && dead == false) {
 			attacking = true;
 			App->audio->PlayFx(attackSound);
+			attackCollider->type = COLLIDER_ATTACK;
 						
 			if (facingRight) {
-				attackCollider = App->collisions->AddCollider({ (int)position.x + rightAttackSpawnPos, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK, App->entity);
 				animation = &attackRight;
 			}
 			else {
-				attackCollider = App->collisions->AddCollider({ (int)position.x + leftAttackSpawnPos, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK, App->entity);
 				animation = &attackLeft;
 			}
 		}
@@ -231,8 +228,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		if ((facingRight && attackRight.Finished())
 			|| (!facingRight && attackLeft.Finished()) || dead == true) {
 
-			if (attackCollider != nullptr)
-				attackCollider->to_delete = true;
+			attackCollider->type = COLLIDER_NONE;
 
 			attackLeft.Reset();
 			attackRight.Reset();
@@ -262,6 +258,8 @@ bool j1Player::Update(float dt, bool do_logic) {
 				collider->type = COLLIDER_PLAYER;
 			}
 		}
+		if (dead && App->fade->IsFading() == false)
+			lives--;
 	}
 
 	if (dead) {
@@ -300,6 +298,17 @@ bool j1Player::Update(float dt, bool do_logic) {
 	// DRAWING EVERYTHING ON THE SCREEN
 	// ---------------------------------------------------------------------------------------------------------------------	
 
+	if (points % 10 == 0 && !extra_life && points != 0)
+	{
+		lives++;
+		extra_life = true;
+		score_points += 25;
+		App->audio->PlayFx(lifeup);
+	}
+
+	else if (points % 10 != 0)
+		extra_life = false;
+
 	// Blitting the player
 	SDL_Rect r = animation->GetCurrentFrame(dt);
 
@@ -315,6 +324,8 @@ bool j1Player::Update(float dt, bool do_logic) {
 		else
 			Draw(r, false, attackBlittingX, attackBlittingY);
 	}
+
+	hud->Update(dt);
 
 	// We update the camera to followe the player every frame
 	UpdateCameraPosition();
@@ -347,6 +358,8 @@ bool j1Player::Load(pugi::xml_node& data) {
 
 	GodMode = data.child("player").child("godmode").attribute("value").as_bool();
 
+	lives = data.child("player").child("lives").attribute("value").as_uint();
+
 	loading = true;
 
 	if (GodMode == true)
@@ -358,6 +371,9 @@ bool j1Player::Load(pugi::xml_node& data) {
 	{
 		collider->type = COLLIDER_PLAYER;
 	}
+
+	if (hud)
+		hud->Load(data);
 
 	return true;
 }
@@ -372,7 +388,13 @@ bool j1Player::Save(pugi::xml_node& data) const {
 
 	pugi::xml_node godmode = data.append_child("godmode");
 
+	pugi::xml_node life = data.append_child("lives");
+	life.append_attribute("value") = lives;
+
 	godmode.append_attribute("value") = GodMode;
+
+	if (hud)
+		hud->Save(data.append_child("hud"));
 
 	return true;
 }
@@ -390,6 +412,11 @@ bool j1Player::CleanUp() {
 	if (attackCollider != nullptr)
 		attackCollider->to_delete = true;
 	
+	if (hud)
+		hud->CleanUp();
+
+	RELEASE(hud);
+
 	return true;
 }
 
@@ -416,86 +443,107 @@ void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 {
 	if (col_1->type == COLLIDER_PLAYER || col_1->type == COLLIDER_NONE)
 	{
-		// If the player collides with a wall
-		if (col_2->type == COLLIDER_WALL) {
-			if (collider->rect.y + collider->rect.h >= col_2->rect.y + colisionMargin
-				&& collider->rect.y <= col_2->rect.y + col_2->rect.h) {
-				//If the collision is with a wall in front
-				if (collider->rect.x + collider->rect.w >= col_2->rect.x
-					&& collider->rect.x <= col_2->rect.x) {
+		//If the player collides with win colliders
+		if (col_2->type == COLLIDER_WIN)
+		{
+			feetOnGround = true;
+			App->fade->FadeToBlack();
 
-					wallInFront = true;
+			if (App->scene1->active)
+				App->scene1->changingScene = true;
+		}
+		else
+		{
+			// If the player collides with a wall
+			if (col_2->type == COLLIDER_WALL) {
+				if (collider->rect.x + collider->rect.w >= col_2->rect.x + colisionMargin
+					&& collider->rect.x + colisionMargin < col_2->rect.x + col_2->rect.w) {
+					//If the collision is with the "ceiling"
+					if (collider->rect.y <= col_2->rect.y + col_2->rect.h
+						&& collider->rect.y + (collider->rect.h / 2) > col_2->rect.y + col_2->rect.h
+						&& verticalSpeed < 0) {
 
-					if(position.x + (collider->rect.w * 3 / 4) < col_2->rect.x)
-						position.x = col_2->rect.x - collider->rect.w;
-				}
-				else
-				//If the collision is with a wall behind
-				if (collider->rect.x <= col_2->rect.x + col_2->rect.w
-					&& collider->rect.x + collider->rect.w >= col_2->rect.x + col_2->rect.w) {
+						position.y = col_2->rect.y + col_2->rect.h;
 
-					wallBehind = true;
-					if(position.x + (collider->rect.w / 4) > col_2->rect.x + col_2->rect.w)
-						position.x = col_2->rect.x + col_2->rect.w - colisionMargin;
-				}
-			}
-
-			if (collider->rect.x + collider->rect.w >= col_2->rect.x + colisionMargin
-				&& collider->rect.x + colisionMargin < col_2->rect.x + col_2->rect.w) {
-				//If the collision is with the "ceiling"
-				if (collider->rect.y <= col_2->rect.y + col_2->rect.h
-					&& collider->rect.y + (collider->rect.h / 2) > col_2->rect.y + col_2->rect.h
-					&& verticalSpeed < 0) {
-
-					position.y = col_2->rect.y + col_2->rect.h;
-
-					wallAbove = true;
-					jumping = false;
-					fallingSpeed = initialFallingSpeed;
-					currentJumps++;
-				}
-				else
-				//If the collision is with the ground
-				if (loading == false) {
-
-					if (collider->rect.y + collider->rect.h >= col_2->rect.y
-						&& collider->rect.y < col_2->rect.y) {
-
-						position.y = col_2->rect.y - collider->rect.h;
-
-						feetOnGround = true;
+						wallAbove = true;
 						jumping = false;
-						freefall = false;
-						verticalSpeed = initialVerticalSpeed;
 						fallingSpeed = initialFallingSpeed;
-						currentJumps = initialJumps;
+						currentJumps++;
+					}
+					else
+					//If the collision is with the ground
+					if (loading == false) {
+						if (collider->rect.y + collider->rect.h >= col_2->rect.y
+							&& collider->rect.y < col_2->rect.y) {
+
+							position.y = col_2->rect.y - collider->rect.h;
+
+							feetOnGround = true;
+							jumping = false;
+							freefall = false;
+							verticalSpeed = initialVerticalSpeed;
+							fallingSpeed = initialFallingSpeed;
+							currentJumps = initialJumps;
+						}
 					}
 				}
-			}
-		}
+				if (collider->rect.y + collider->rect.h >= col_2->rect.y + colisionMargin
+					&& collider->rect.y <= col_2->rect.y + col_2->rect.h) {
+					//If the collision is with a wall in front
+					if (collider->rect.x + collider->rect.w >= col_2->rect.x
+						&& collider->rect.x <= col_2->rect.x && !wallAbove) {
 
-		//If the player collides with death colliders
-		if (col_2->type == COLLIDER_DEATH || col_2->type == COLLIDER_ENEMY)
-		{
-			if (col_2->rect.h < deathByFallColliderHeight)
-				deathByFall = true;
-			else {
-				if (!playedSound) {
-					App->audio->PlayFx(playerHurt);
-					playedSound = true;
+						wallInFront = true;
+
+						if (position.x + (collider->rect.w * 3 / 4) < col_2->rect.x)
+							position.x = col_2->rect.x - collider->rect.w - 1;
+					}
+					else
+					//If the collision is with a wall behind
+					if (collider->rect.x <= col_2->rect.x + col_2->rect.w
+						&& collider->rect.x + collider->rect.w >= col_2->rect.x + col_2->rect.w && !wallAbove) {
+
+						wallBehind = true;
+
+						if (position.x + (collider->rect.w / 4) < col_2->rect.x + col_2->rect.w)
+							position.x = col_2->rect.x + col_2->rect.w - colisionMargin;
+					}
+				}				
+			}
+
+			//If the player collides with death colliders
+			if (col_2->type == COLLIDER_DEATH || col_2->type == COLLIDER_ENEMY)
+			{
+				if(App->scene1->active)
+					App->scene1->settings_window->position = App->gui->settingsPosition;
+
+				App->fade->FadeToBlack(3.0f);
+
+				if (lives > 0)
+				{
+					if (col_2->rect.h < deathByFallColliderHeight)
+						deathByFall = true;
+					else {
+						if (!playedSound) {
+							App->audio->PlayFx(playerHurt);
+							playedSound = true;
+						}
+
+						jumping = false;
+						fallingSpeed = initialFallingSpeed;
+					}
+
+					dead = true;
+					App->audio->PlayFx(deathSound);
+					currentJumps == maxJumps;
+					points = 0;
+					score_points = 0;
 				}
-
-				jumping = false;
-				fallingSpeed = initialFallingSpeed;
+				else if (App->scene1->active)					
+					App->scene1->backToMenu = true;
 			}
-			App->entity->DestroyEntities();
-			if (App->scene1->active == true)
-				App->fade->FadeToBlack(App->scene1, App->scene1, 3.0f);
-
-			dead = true;
-			App->audio->PlayFx(deathSound);
-			currentJumps == maxJumps;
 		}
+		
 	}
 };
 

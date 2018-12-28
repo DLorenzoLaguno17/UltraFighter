@@ -52,6 +52,27 @@
     <ClCompile Include="j1Main.cpp">
       <Filter>Development\Core</Filter>
     </ClCompile>
+    <ClCompile Include="j1Gui.cpp">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Fonts.cpp">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Button.cpp">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="j1SceneMenu.cpp">
+      <Filter>Development\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Label.cpp">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Box.cpp">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Hud.cpp">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClCompile>
     <ClCompile Include="j1Player.cpp">
       <Filter>Development\Modules\Entities</Filter>
     </ClCompile>
@@ -129,6 +150,30 @@
     <ClInclude Include="j1App.h">
       <Filter>Development\Core</Filter>
     </ClInclude>
+    <ClInclude Include="j1Gui.h">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Fonts.h">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="j1UserInterfaceElement.h">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Button.h">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Label.h">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="j1SceneMenu.h">
+      <Filter>Development\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Box.h">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Hud.h">
+      <Filter>Development\Modules\GraphicUserInterface</Filter>
+    </ClInclude>
     <ClInclude Include="j1Player.h">
       <Filter>Development\Modules\Entities</Filter>
     </ClInclude>
@@ -163,6 +208,9 @@
     </Filter>
     <Filter Include="Development\Core">
       <UniqueIdentifier>{4e40a7e1-5ec2-4dd0-9d4b-62cd6e2ce8e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Development\Modules\GraphicUserInterface">
+      <UniqueIdentifier>{12d42398-2970-43ff-8668-cdab242895b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

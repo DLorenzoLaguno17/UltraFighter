@@ -7,8 +7,7 @@
 
 //#define NUM_KEYS 352
 #define NUM_MOUSE_BUTTONS 5
-#define MAX_BUTTONS 100
-#define DEAD_ZONE 0.2f
+//#define LAST_KEYS_PRESSED_BUFFER 50
 
 struct SDL_Rect;
 
@@ -81,7 +80,7 @@ public:
 	void GetMousePosition(int &x, int &y);
 	void GetMouseMotion(int& x, int& y);
 
-public:
+private:
 	bool		windowEvents[WE_COUNT];
 	j1KeyState*	keyboard;
 	j1KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];
@@ -90,29 +89,18 @@ public:
 	int			mouse_x;
 	int			mouse_y;
 
-	//p1 controller
+public:
+	// Controller
 	SDL_GameController* controller = nullptr;
-	bool gamepadP1con = false;
-	int gamepadP1LAxisX = 0;
-	int gamepadP1LAxisY = 0;
-	bool gamepadP1APressed = false;
-	bool gamepadP1BPressed = false;
-	bool gamepadP1YPressed = false;
-	bool gamepadP1StartPressed = false;
-	//p2 controller
-	SDL_GameController* controller2 = nullptr;
-	bool gamepadP2con = false;
-	int gamepadP2LAxisX = 0;
-	int gamepadP2LAxisY = 0;
-	bool gamepadP2APressed = false;
-	bool gamepadP2BPressed = false;
-	bool gamepadP2YPressed = false;
-	bool gamepadP2StartPressed = false;
-
-	//SDL_Joystick *joystick = SDL_JoystickOpen(0);
+	bool gamepadCon = false;
+	int gamepadLAxisX = 0;
+	int gamepadLAxisY = 0;
+	bool gamepadAPressed = false;
+	bool gamepadBPressed = false;
+	bool gamepadYPressed = false;
+	bool gamepadStartPressed = false;
 
 	bool use_controller = false;
-	bool use_controller2 = false;
 	int controller_index = 0;
 };
 

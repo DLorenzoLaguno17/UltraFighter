@@ -8,7 +8,7 @@
 #include "j1Entity.h"
 #include "j1Scene1.h"
 #include "j1Player.h"
-
+#include "j1Hook.h"
 #include "Brofiler/Brofiler.h"
 
 j1EntityManager::j1EntityManager()
@@ -80,13 +80,10 @@ bool j1EntityManager::CleanUp()
 {
 	LOG("Freeing all enemies");
 
-	bool ret = true;
-
-	p2List_item<j1Entity*>* item;
 	
-	for (item = entities.end; item != NULL && ret == true; item = item->prev)
+	for (p2List_item<j1Entity*>* iterator = entities.start; iterator != nullptr; iterator = iterator->next) 
 	{
-		ret = item->data->CleanUp();
+		iterator->data->CleanUp();
 	}
 
 	entities.clear();
@@ -94,7 +91,7 @@ bool j1EntityManager::CleanUp()
 	player = nullptr;
 	hook = nullptr;
 
-	return ret;
+	return true;
 }
 
 j1Entity* j1EntityManager::CreateEntity(ENTITY_TYPES type, int x, int y)
@@ -105,13 +102,14 @@ j1Entity* j1EntityManager::CreateEntity(ENTITY_TYPES type, int x, int y)
 	case PLAYER: 
 		ret = new j1Player(x, y, type);
 	if (ret != nullptr) entities.add(ret); break;
+
 	}
 	return ret;
 }
 
 void j1EntityManager::AddEnemy(int x, int y, ENTITY_TYPES type)
 {
-	for (uint i = 0; i < MAX_ENEMIES; ++i)
+	for (uint i = 0; i < MAX_ENTITIES; ++i)
 	{
 		if (queue[i].type == ENTITY_TYPES::UNKNOWN)
 		{
@@ -123,27 +121,8 @@ void j1EntityManager::AddEnemy(int x, int y, ENTITY_TYPES type)
 	}
 }
 
-void j1EntityManager::DestroyEntities()
-{
-	for (int i = 0; i < MAX_ENEMIES; i++) 
-	{ 
-		queue[i].type = ENTITY_TYPES::UNKNOWN; 
-	}	
-	
-	for (p2List_item<j1Entity*>* iterator = entities.start; iterator; iterator = iterator->next) {
-		if (iterator->data->type != ENTITY_TYPES::PLAYER && iterator->data->type != ENTITY_TYPES::HOOK)
-		{
-			iterator->data->CleanUp();
-			int num = entities.find(iterator->data);
-			RELEASE(entities.At(num)->data);
-			entities.del(entities.At(num));
-		}
-	}
-}
-
 void j1EntityManager::CreatePlayer() 
 {
-	hook = (j1Hook*)CreateEntity(HOOK);
 	player = (j1Player*)CreateEntity(PLAYER);
 }
 
@@ -166,44 +145,12 @@ bool j1EntityManager::Load(pugi::xml_node& data)
 		player->Load(data);
 	}
 
-	for (pugi::xml_node harpy = data.child("harpy").child("position"); harpy; harpy = harpy.next_sibling()) {
-		iPoint harpypos = { harpy.attribute("x").as_int(), harpy.attribute("y").as_int() };
-		AddEnemy(harpypos.x, harpypos.y, HARPY);
-	}
-
 	return true;
 }
 
 bool j1EntityManager::Save(pugi::xml_node& data) const
 {
 	player->Save(data.append_child("player"));
-
-	pugi::xml_node harpy = data.append_child("harpy");
-	pugi::xml_node skeleton = data.append_child("skeleton");
-
-	for (p2List_item<j1Entity*>* iterator = entities.start; iterator; iterator = iterator->next)
-	{
-		if (iterator->data->type == HARPY)
-			iterator->data->Save(harpy);
-		if (iterator->data->type == SKELETON)
-			iterator->data->Save(skeleton);
-	}
-
-	for (int i = 0; i < MAX_ENEMIES; ++i)
-	{
-		if (queue[i].type != ENTITY_TYPES::UNKNOWN) {
-			if (queue[i].type == HARPY) {
-				pugi::xml_node position = harpy.append_child("position");
-				position.append_attribute("x") = queue[i].position.x;
-				position.append_attribute("y") = queue[i].position.y;
-			}
-			if (queue[i].type == SKELETON) {
-				pugi::xml_node position = skeleton.append_child("position");
-				position.append_attribute("x") = queue[i].position.x;
-				position.append_attribute("y") = queue[i].position.y;
-			}
-		}
-	}
 
 	return true;
 }

@@ -8,7 +8,7 @@
 #include "p2Log.h"
 
 struct Collider;
-struct Animation;
+class Animation;
 struct SDL_Texture;
 
 enum ENTITY_TYPES;
@@ -17,6 +17,8 @@ class j1Entity
 {
 public:
 	j1Entity(int x, int y, ENTITY_TYPES type);
+
+	~j1Entity() {}
 
 	virtual bool Start() {
 		return true;

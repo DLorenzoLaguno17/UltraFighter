@@ -9,12 +9,15 @@
 #include "j1Render.h"
 #include "j1Textures.h"
 #include "j1Audio.h"
+#include "j1SceneMenu.h"
 #include "j1Scene1.h"
 #include "j1Map.h"
 #include "j1FadeToBlack.h"
-#include "j1App.h"
 #include "j1Collisions.h"
 #include "j1EntityManager.h"
+#include "j1Fonts.h"
+#include "j1Gui.h"
+#include "j1App.h"
 
 #include "Brofiler/Brofiler.h"
 
@@ -29,11 +32,14 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	render = new j1Render();
 	tex = new j1Textures();
 	audio = new j1Audio();
+	menu = new j1SceneMenu();
 	scene1 = new j1Scene1();
 	map = new j1Map();
 	collisions = new j1Collisions();
 	entity = new j1EntityManager();
 	fade = new j1FadeToBlack();
+	font = new j1Fonts();
+	gui = new j1Gui();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -42,11 +48,13 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(map);
+	AddModule(menu);
 	AddModule(scene1);
-
 	AddModule(entity);
-	AddModule(fade);
 	AddModule(collisions);
+	AddModule(font);
+	AddModule(gui);
+	AddModule(fade);
 	
 	// render last to swap buffer
 	AddModule(render);
@@ -219,7 +227,7 @@ void j1App::FinishUpdate()
 	else
 		vsync = "off";
 
-	sprintf_s(title, 256, "The Cliffborn Islands v0.3 ~ FPS: %d / Av.FPS: %.2f / Last Frame Ms: %02u / Cap %s / VSYNC %s",
+	sprintf_s(title, 256, "UltraFighter v1.0 ~ FPS: %d / Av.FPS: %.2f / Last Frame Ms: %02u / Cap %s / VSYNC %s",
 		frames_on_last_update, avg_fps, last_frame_ms, cap, vsync);
 	App->win->SetTitle(title);
 
@@ -269,6 +277,7 @@ bool j1App::DoUpdate()
 			continue;
 		}
 
+		if (gamePaused) dt = 0.0f;
 		ret = item->data->Update(dt);
 	}
 

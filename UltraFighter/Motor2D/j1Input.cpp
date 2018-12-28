@@ -47,11 +47,6 @@ bool j1Input::Awake(pugi::xml_node& config)
 		{
 			controller = SDL_GameControllerOpen(0);
 		}
-		if (SDL_IsGameController(1)) {
-			controller2 = SDL_GameControllerOpen(1);
-			break;
-		}
-
 	}
 
 	if (controller == NULL) {
@@ -77,72 +72,27 @@ bool j1Input::PreUpdate()
 	SDL_PumpEvents();
 
 	static SDL_Event event;
-
 	
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 
-	//CONTROLLER INPUT
-	for (int i = 0; i < SDL_NumJoysticks(); ++i)
+	// Controller input	
+	controller = SDL_GameControllerOpen(0);
+	if (SDL_GameControllerGetAttached(controller))
 	{
-		if (SDL_IsGameController(i))
-		{
-			if (i == 0)
-			{
-				if (SDL_IsGameController(i))
-				{
-					controller = SDL_GameControllerOpen(i);
-					if (SDL_GameControllerGetAttached(controller))
-					{
-						gamepadP1LAxisX = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
-						gamepadP1LAxisY = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY);
-						gamepadP1APressed = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A);
-						gamepadP1BPressed = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B);
-						gamepadP1YPressed = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_Y);
-						gamepadP1StartPressed = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START);
-						gamepadP1con = true;
-					}
-					else
-					{
-						SDL_GameControllerClose(controller);
-						controller = nullptr;
-						gamepadP1con = false;
-					}
-				}
-			}
-			else if (i<1)
-			{
-				gamepadP2con = false;
-				SDL_GameControllerClose(controller2);
-				controller2 = nullptr;
-				gamepadP2con = false;
-			}
-			else if (i == 1 || i == 0 && gamepadP1con == false)
-			{
-				if (SDL_IsGameController(i))
-				{
-					controller2 = SDL_GameControllerOpen(i);
-					if (SDL_GameControllerGetAttached(controller2))
-					{
-						gamepadP2LAxisX = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_LEFTX);
-						gamepadP2LAxisY = SDL_GameControllerGetAxis(controller2, SDL_CONTROLLER_AXIS_LEFTY);
-						gamepadP2APressed = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_A);
-						gamepadP2BPressed = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_B);
-						gamepadP2YPressed = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_Y);
-						gamepadP2StartPressed = SDL_GameControllerGetButton(controller2, SDL_CONTROLLER_BUTTON_START);
-						gamepadP2con = true;
-						break;
-					}
-					else
-					{
-						SDL_GameControllerClose(controller2);
-						controller2 = nullptr;
-						gamepadP2con = false;
-					}
-				}
-			}
-		}
+		gamepadLAxisX = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
+		gamepadLAxisY = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY);
+		gamepadAPressed = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A);
+		gamepadBPressed = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B);
+		gamepadYPressed = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_Y);
+		gamepadStartPressed = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START);
+		gamepadCon = true;
 	}
-
+	else
+	{
+		SDL_GameControllerClose(controller);
+		controller = nullptr;
+		gamepadCon = false;
+	}			
 
 	for(int i = 0; i < MAX_KEYS; ++i)
 	{

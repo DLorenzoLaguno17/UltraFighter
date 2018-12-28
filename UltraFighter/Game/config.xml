@@ -7,7 +7,7 @@
   </app>
 	
   <renderer>
-    <vsync value="false"/>
+    <vsync value="true"/>
 	<camera initialX="0" initialY="0"/>
   </renderer>
 
@@ -15,7 +15,7 @@
     <resolution width="1024" height="768" scale="4"/>
     <fullscreen value="false"/>
     <borderless value="false"/>
-    <resizable value="true"/>
+    <resizable value="false"/>
     <fullscreen_window value="false"/>
   </window>  
   
@@ -59,6 +59,23 @@
 	<blitSpeed backgrounds="0.7f" fog="0.85f" map="1.0f"/>
     <folder>maps/</folder>
   </map>  
+  
+  <gui>
+	<scale buttonsScale="0.5f" boxScale="0.23f" logoScale="0.2f"/>
+	<positions settingsPositionX="54" settingsPositionY="10"/>
+	<sliderLimits maximum="108" minimum="58"/>
+	<colors a="255">
+		<beige r="245" g="245" b="220"/>
+		<brown r="73" g="31" b="10"/>
+		<grey r="134" g="136" b="138"/>
+	</colors>
+  </gui>
+  
+  <menu>
+  </menu>
+  
+  <credits>
+  </credits>
   
   <scene1>
 	<camera cameraLimit="-8570" playerLimit="2374"/>

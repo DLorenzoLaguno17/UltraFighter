@@ -1,13 +1,11 @@
-#ifndef __J1ENEMIES_H__
-#define __J1ENEMIES_H__
+#ifndef __J1ENTITYMANAGER_H__
+#define __J1ENTITYMANAGER_H__
 
 #include "j1Module.h"
-#include "p2Defs.h"
-#include "p2List.h"
-#include "p2Point.h"
-#include "j1Entity.h"
+#include "j1UserInterfaceElement.h"
 
-#define MAX_ENEMIES 50
+
+#define MAX_ENTITIES 1000
 
 class j1Entity;
 class j1Player;
@@ -18,13 +16,10 @@ struct SDL_Texture;
 enum ENTITY_TYPES
 {
 	PLAYER,
-	HOOK,
-	HARPY,
-	SKELETON,
 	UNKNOWN
 };
 
-struct EnemyInfo
+struct EntityInfo
 {
 	ENTITY_TYPES type = ENTITY_TYPES::UNKNOWN;
 	iPoint position;
@@ -56,7 +51,6 @@ public:
 	void OnCollision(Collider* c1, Collider* c2);
 	void CreatePlayer();
 	void AddEnemy(int x, int y, ENTITY_TYPES type);
-	void DestroyEntities();
 
 public:
 
@@ -70,11 +64,11 @@ public:
 
 private:
 
-	EnemyInfo			queue[MAX_ENEMIES];
+	EntityInfo			queue[MAX_ENTITIES];
 	bool				do_logic = false;
 	float				accumulatedTime = 0.0f;
 	float				updateMsCycle = 0.0f;
 
 };
 
-#endif // __J1ENEMIES_H__
+#endif // __J1ENTITYMANAGER_H__

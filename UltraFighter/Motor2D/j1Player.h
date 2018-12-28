@@ -8,12 +8,12 @@
 
 struct SDL_Texture;
 struct Collider;
+class j1Hud;
 
 class j1Player : public j1Entity
 {
 
 public:
-
 	j1Player(int x, int y, ENTITY_TYPES type);
 
 	// Destructor
@@ -57,6 +57,7 @@ public:
 	uint jumpSound;
 	uint playerHurt;
 	uint attackSound;
+	uint lifeup;
 
 	// To know the last direction the character was moving to
 	bool facingRight = true;
@@ -72,8 +73,13 @@ public:
 	uint maxJumps;
 	uint colisionMargin;
 	uint deathByFallColliderHeight;
+	uint points = 0;
+	uint score_points = 0;
+	uint lives;
 
 	Collider* attackCollider = nullptr;
+
+	j1Hud* hud = nullptr;
 
 	// Attack values
 	int attackBlittingX;
@@ -109,9 +115,11 @@ public:
 	bool playedSound = false;
 	bool deathByFall = false;
 	bool attacking = false;
+	bool extra_life = false;
+
+	int cameraLimit;
 
 private:
-	int cameraLimit;
 	int playerLimit;
 
 	bool loadedAudios = false;

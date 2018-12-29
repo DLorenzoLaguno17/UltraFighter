@@ -55,9 +55,7 @@ public:
 public:
 
 	p2List<j1Entity*>	entities;
-
 	j1Player*			player = nullptr;
-	j1Hook*				hook = nullptr;
 
 	SDL_Texture*		player_texture = nullptr;
 	SDL_Texture*		harpy_texture = nullptr;

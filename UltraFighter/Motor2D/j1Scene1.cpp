@@ -280,8 +280,6 @@ bool j1Scene1::CleanUp()
 
 	if (App->entity->player)
 		App->entity->player->CleanUp();
-	if (App->entity->hook)
-		App->entity->hook->CleanUp();
 
 	for (p2List_item<j1Button*>* item = scene1Buttons.start; item != nullptr; item = item->next) {
 		item->data->CleanUp();

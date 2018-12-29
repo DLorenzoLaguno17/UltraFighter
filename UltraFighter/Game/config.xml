@@ -32,28 +32,9 @@
 	  <physics initialFalling="0.0f" falling="0.0f" acceleration="550.0f"  jumpNumber="0" maxJumps="2"/>
 	</speed>
 	<attack blittingX="-15" blittingY="-2" rightColliderSpawnPos="20" leftColliderSpawnPos="-16"/>
-  </player>
-  
-  <hook speed="200" leftMargin="57">
-	  <spawnPositionRight x="11" y="3"/>
-	  <spawnPositionLeft x="-52" y="3"/>
-	  <collider colliderPosition="0" heightMargin="5"/>
-	  <size width="11" height="13"/>
-  </hook>
+  </player>  
   
   <entityManager updateMsCycle="0.1f"/>
-  
-  <harpy speed="70.0f">
-	  <initialPosition x="200" y="20"/>
-	  <margin x="10" y="10"/>
-	  <colliderSize w="25" h="23"/>
-  </harpy>
-  
-  <skeleton speed="50.0f">
-      <initialPosition x="200" y="20"/>
-	  <margin x="10" y="10"/>
-	  <colliderSize w="13" h="22"/>
-  </skeleton>
 
   <map>
 	<blitSpeed backgrounds="0.7f" fog="0.85f" map="1.0f"/>

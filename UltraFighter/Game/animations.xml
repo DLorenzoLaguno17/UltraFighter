@@ -19,17 +19,17 @@
       <animation x="401" y="8" w="43" h="91"/>
     </move_backwards>
     
-    <jump loop="true" speed="8.0f">
-      <animation x="452" y="8" w="43" h="91"/>
-      <animation x="503" y="8" w="40" h="91"/>
-      <animation x="545" y="8" w="38" h="91"/>
-      <animation x="582" y="8" w="35" h="91"/>
-      <animation x="619" y="8" w="35" h="91"/>
-      <animation x="656" y="8" w="39" h="91"/>
-      <animation x="696" y="8" w="43" h="91"/>
+    <jump loop="false" speed="12.0f">
+      <animation x="452" y="8" w="42" h="91"/>
+      <animation x="503" y="8" w="39" h="91"/>
+      <animation x="545" y="8" w="37" h="91"/>
+      <animation x="582" y="8" w="34" h="91"/>
+      <animation x="619" y="8" w="34" h="91"/>
+      <animation x="656" y="8" w="38" h="91"/>
+      <animation x="696" y="8" w="42" h="91"/>
     </jump>
 
-    <jump_forward loop="true" speed="12.0f">
+    <jump_forward loop="false" speed="12.0f">
       <animation x="747" y="8" w="50" h="91"/>
       <animation x="795" y="8" w="39" h="91"/>
       <animation x="834" y="8" w="67" h="91"/>
@@ -39,23 +39,23 @@
       <animation x="1071" y="8" w="35" h="91"/>
     </jump_forward>
     
-    <crouch loop="true" speed="12.0f">
+    <crouch loop="false" speed="12.0f">
       <animation x="1113" y="8" w="43" h="91"/>
       <animation x="1160" y="8" w="43" h="91"/>
     </crouch>
 
-    <blocking loop="true" speed="12.0f">
+    <blocking loop="false" speed="12.0f">
       <animation x="1211" y="8" w="43" h="91"/>
       <animation x="1260" y="8" w="43" h="91"/>
     </blocking>
     
-    <l_punch loop="true" speed="12.0f">
+    <l_punch loop="false" speed="12.0f">
       <animation x="3" y="112" w="43" h="103"/>
       <animation x="52" y="112" w="43" h="103"/>
       <animation x="117" y="112" w="43" h="103"/>
     </l_punch>
     
-    <m_h_punch loop="true" speed="12.0f">
+    <m_h_punch loop="false" speed="12.0f">
       <animation x="170" y="112" w="43" h="103"/>
       <animation x="218" y="112" w="43" h="103"/>
       <animation x="274" y="112" w="76" h="103"/>
@@ -63,13 +63,13 @@
       <animation x="411" y="112" w="43" h="103"/>
     </m_h_punch>
     
-    <forward_m_punch loop="true" speed="12.0f">
+    <forward_m_punch loop="false" speed="12.0f">
       <animation x="464" y="112" w="47" h="103"/>
       <animation x="512" y="112" w="47" h="103"/>
       <animation x="565" y="112" w="47" h="103"/>
     </forward_m_punch>
     
-    <forward_l_punch loop="true" speed="12.0f">
+    <forward_l_punch loop="false" speed="12.0f">
       <animation x="616" y="112" w="47" h="103"/>
       <animation x="666" y="112" w="49" h="103"/>
       <animation x="719" y="112" w="61" h="103"/>
@@ -79,7 +79,7 @@
       <animation x="961" y="112" w="47" h="103"/>
     </forward_l_punch>
     
-	  <forward_h_punch loop="true" speed="12.0f">
+	  <forward_h_punch loop="false" speed="12.0f">
       <animation x="1012" y="112" w="47" h="103"/>
       <animation x="1060" y="112" w="60" h="103"/>
       <animation x="1125" y="112" w="57" h="103"/>
@@ -87,13 +87,13 @@
       <animation x="1253" y="112" w="61" h="103"/>
     </forward_h_punch>
     
-    <l_m_kick loop="true" speed="12.0f">
+    <l_m_kick loop="false" speed="12.0f">
       <animation x="6" y="237" w="49" h="109"/>
       <animation x="62" y="237" w="68" h="109"/>
       <animation x="135" y="237" w="49" h="109"/>
     </l_m_kick>
         
-    <h_kick loop="true" speed="12.0f">
+    <h_kick loop="false" speed="12.0f">
       <animation x="195" y="237" w="43" h="109"/>
       <animation x="245" y="237" w="55" h="109"/>
       <animation x="306" y="237" w="68" h="109"/>
@@ -101,13 +101,13 @@
       <animation x="448" y="237" w="43" h="109"/>
     </h_kick>
     
-    <forward_l_kick loop="true" speed="12.0f">
+    <forward_l_kick loop="false" speed="12.0f">
       <animation x="498" y="237" w="47" h="109"/>
       <animation x="551" y="237" w="71" h="109"/>
       <animation x="628" y="237" w="47" h="109"/>
     </forward_l_kick>
     
-    <forward_m_kick loop="true" speed="12.0f">
+    <forward_m_kick loop="false" speed="12.0f">
       <animation x="685" y="237" w="50" h="109"/>
       <animation x="740" y="237" w="50" h="109"/>
       <animation x="795" y="237" w="55" h="109"/>
@@ -115,7 +115,7 @@
       <animation x="910" y="237" w="50" h="109"/>
     </forward_m_kick>
         
-    <forward_h_kick loop="true" speed="12.0f">
+    <forward_h_kick loop="false" speed="12.0f">
       <animation x="969" y="237" w="47" h="109"/>
       <animation x="1023" y="237" w="79" h="109"/>
       <animation x="1107" y="237" w="52" h="109"/>
@@ -123,20 +123,20 @@
       <animation x="1251" y="237" w="47" h="109"/>
     </forward_h_kick>
     
-    <crouch_l_punch loop="true" speed="12.0f">
+    <crouch_l_punch loop="false" speed="12.0f">
       <animation x="9" y="362" w="49" h="112"/>
       <animation x="61" y="362" w="62" h="112"/>
       <animation x="127" y="362" w="47" h="112"/>
     </crouch_l_punch>
        
-    <crouch_m_punch loop="true" speed="12.0f">
+    <crouch_m_punch loop="false" speed="12.0f">
       <animation x="181" y="362" w="45" h="112"/>
       <animation x="232" y="362" w="61" h="112"/>
       <animation x="298" y="362" w="45" h="112"/>
       <animation x="348" y="362" w="45" h="112"/>
     </crouch_m_punch>
     
-    <crouch_h_punch loop="true" speed="12.0f">
+    <crouch_h_punch loop="false" speed="12.0f">
       <animation x="401" y="362" w="43" h="112"/>
       <animation x="450" y="362" w="49" h="112"/>
       <animation x="505" y="362" w="45" h="112"/>
@@ -144,19 +144,19 @@
       <animation x="610" y="362" w="43" h="112"/>
     </crouch_h_punch>
     
-    <crouch_l_kick loop="true" speed="12.0f">
+    <crouch_l_kick loop="false" speed="12.0f">
       <animation x="660" y="362" w="49" h="112"/>
       <animation x="714" y="362" w="71" h="112"/>
       <animation x="790" y="362" w="49" h="112"/>
     </crouch_l_kick>
     
-    <crouch_m_kick loop="true" speed="12.0f">
+    <crouch_m_kick loop="false" speed="6.0f">
       <animation x="846" y="362" w="49" h="112"/>
       <animation x="900" y="362" w="89" h="112"/>
       <animation x="993" y="362" w="48" h="112"/>
     </crouch_m_kick>
   
-    <crouch_h_kick loop="true" speed="12.0f">
+    <crouch_h_kick loop="false" speed="12.0f">
       <animation x="1050" y="362" w="46" h="112"/>
       <animation x="1104" y="362" w="70" h="112"/>
       <animation x="1179" y="362" w="51" h="112"/>
@@ -165,60 +165,4 @@
     </crouch_h_kick>
   
   </player>
-  
-  <enemies>    
-    <harpy>      
-      <move loop ="true" speed="10.0f">
-        <animation x="32" y="25" w="38" h="34"/>
-        <animation x="80" y="25" w="38" h="34"/>
-        <animation x="125" y="25" w="44" h="34"/>
-        <animation x="175" y="25" w="40" h="34"/>
-        <animation x="58" y="67" w="38" h="29"/>
-        <animation x="98" y="67" w="46" h="29"/>
-        <animation x="148" y="67" w="41" h="29"/>
-      </move>
-
-      <idle loop ="true" speed="10.0f">
-        <animation x="42" y="145" w="38" h="34"/>
-        <animation x="90" y="145" w="38" h="34"/>
-        <animation x="135" y="145" w="44" h="34"/>
-        <animation x="185" y="145" w="40" h="34"/>
-        <animation x="68" y="192" w="38" h="29"/>
-        <animation x="108" y="192" w="46" h="29"/>
-        <animation x="158" y="192" w="41" h="29"/>
-      </idle>      
-    </harpy>
-	
-	  <skeleton>
-	    <move loop ="true" speed="1.0f">
-         <animation x="30" y="89" w="13" h="22"/>
-         <animation x="47" y="89" w="13" h="22"/>
-         <animation x="64" y="89" w="13" h="22"/>
-        <animation x="81" y="89" w="13" h="22"/>
-      </move>
-
-      <idle loop ="true" speed="1.0f">
-        <animation x="13" y="14" w="22" h="22"/>
-        <animation x="37" y="14" w="13" h="22"/>
-        <animation x="52" y="13" w="16" h="22"/>
-        <animation x="37" y="14" w="13" h="22"/>
-      </idle>
-	  </skeleton>
-
-    <coin>
-      <idle loop ="true" speed="10.0f">
-        <animation x="4" y="4" w="16" h="16"/>
-        <animation x="36" y="4" w="16" h="16"/>
-        <animation x="68" y="4" w="16" h="16"/>
-        <animation x="100" y="4" w="16" h="16"/>
-        <animation x="4" y="28" w="16" h="16"/>
-        <animation x="36" y="28" w="16" h="16"/>
-        <animation x="68" y="28" w="16" h="16"/>
-        <animation x="100" y="28" w="16" h="16"/>
-        <animation x="4" y="50" w="16" h="16"/>
-        <animation x="36" y="50" w="16" h="16"/>
-      </idle>>
-    </coin>
-  </enemies>
-
 </animations>

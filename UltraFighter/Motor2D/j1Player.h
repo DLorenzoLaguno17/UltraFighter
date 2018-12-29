@@ -102,7 +102,6 @@ public:
 	int rightAttackSpawnPos;
 	int leftAttackSpawnPos;
 
-	float godModeSpeed;
 	float horizontalSpeed;
 	//Jumping speed
 	float initialVerticalSpeed;
@@ -114,23 +113,16 @@ public:
 	float verticalAcceleration;
 
 	// It tells you wether the player has landed, has a wall in front, a wall behind or a wall above
-	bool feetOnGround = false;
-	bool wallInFront = false;
-	bool wallBehind = false;
-	bool wallAbove = false;
-
-	bool GodMode = false;
 	bool playerIdle = false;
 	bool jumping = false;
-	bool freefall = false;
+	bool crouching = false;
 
 	bool player_start = false;
-	bool loading = false;
 	bool dead = false;
 	bool playedSound = false;
-	bool deathByFall = false;
 	bool attacking = false;
-	bool extra_life = false;
+	bool punching = false;
+	bool kicking = false;
 
 	int cameraLimit;
 

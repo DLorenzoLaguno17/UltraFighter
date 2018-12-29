@@ -77,10 +77,7 @@ bool j1Player::Start() {
 	position.x = initialPosition.x;
 	position.y = initialPosition.y;
 
-	if (GodMode)
-		collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y + margin.y, playerSize.x, playerSize.y}, COLLIDER_NONE, App->entity);
-	else
-		collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_PLAYER, App->entity);
+	collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_PLAYER, App->entity);
 	
 	attackCollider = App->collisions->AddCollider({ (int)position.x + rightAttackSpawnPos, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_NONE, App->entity);
 
@@ -104,222 +101,144 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 	BROFILER_CATEGORY("PlayerUpdate", Profiler::Color::LightSeaGreen)
 
+	if (player_start)
+	{
 		// ---------------------------------------------------------------------------------------------------------------------
 		// CONTROL OF THE PLAYER
 		// ---------------------------------------------------------------------------------------------------------------------
+							
+		// Idle
+		if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_IDLE
+			&& App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_IDLE
+			&& App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_IDLE
+			&& attacking == false)
+			animation = &idle;
 
-		if (player_start)
-		{
-			// Idle
-			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_IDLE
-				&& App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_IDLE
-				&& attacking == false)
-				animation = &idle;
-
-			// Direction controls	
-			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false) {
-				if (wallInFront == false && dead == false) {
-					position.x += horizontalSpeed * dt;
-					animation = &move_forward;
-				}
-				else if (dead == true) {
-					facingRight = true;
-					animation = &idle;
-				}
-				else
-					animation = &idle;
-			}
-
-			if ((App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT && attacking == false)) {
-				if (wallBehind == false && dead == false) {
-					position.x -= horizontalSpeed * dt;
-					animation = &move_backwards;
-				}
-				else if (dead == true) {
-					facingRight = false;
-					animation = &idle;
-				}
-				else
-					animation = &idle;
-			}
-
-			// The player falls if he has no ground
-			if (feetOnGround == false && jumping == false) {
-
-				freefall = true;
-				if ((App->scene1->active && App->scene1->startup_time.Read() > 85)) {
-					position.y += fallingSpeed * dt;
-					fallingSpeed += verticalAcceleration * dt;
-				}
-
-			}
-
-			// Jump controls
-			if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN) {
-					jumping = true;
-					verticalSpeed = initialVerticalSpeed;
-					currentJumps++;
-					animation = &jump;
-
-					if (freefall == true || (currentJumps > 1 && freefall == false))
-						App->audio->PlayFx(jumpSound);
-				
-			}
-
-			//		// Reseting the jump every frame
-			//		feetOnGround = false;
-			//		if (dead && deathByFall == false)
-			//			animation = &death;
-
-			//		if (jumping == true && animation != &death) {
-			//			// If the player touches a wall collider
-			//			if (feetOnGround) {
-
-			//				animation = &idle;
-			//				jumping = false;
-			//			}
-			//			else {
-
-			//				if (wallAbove == false) {
-			//					position.y += verticalSpeed * dt;
-			//					verticalSpeed += verticalAcceleration * dt;
-			//				}
-
-			//				// While the player is falling
-			//				if (!attacking) {
-			//					if (verticalSpeed <= 0) {
-			//						animation = &jump;
-			//					}
-			//					else if (verticalSpeed > 0) {
-			//						animation = &fall;
-			//					}
-			//				}
-			//			}
-			//		}
-			//	}
-
-			//	// Attack control
-			//	if ((App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN || (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_X)) == KEY_DOWN)
-			//		&& attacking == false && GodMode == false && dead == false) {
-			//		attacking = true;
-			//		App->audio->PlayFx(attackSound);
-			//		attackCollider->type = COLLIDER_ATTACK;
-			//					
-			//		if (facingRight) {
-			//			animation = &attackRight;
-			//		}
-			//		else {
-			//			animation = &attackLeft;
-			//		}
-			//	}
-
-			//	// Attack management
-			//	if ((facingRight && attackRight.Finished())
-			//		|| (!facingRight && attackLeft.Finished()) || dead == true) {
-
-			//		attackCollider->type = COLLIDER_NONE;
-
-			//		attackLeft.Reset();
-			//		attackRight.Reset();
-			//		animation = &idle;
-			//		attacking = false;
-			//	}
-			//	else if(attackCollider != nullptr) {
-			//		if (facingRight)
-			//			attackCollider->SetPos((int)position.x + rightAttackSpawnPos, (int)position.y + margin.y);
-			//		else
-			//			attackCollider->SetPos((int)position.x + leftAttackSpawnPos, (int)position.y + margin.y);
-			//	}
-
-			//	if (dead && App->fade->IsFading() == false)
-			//		lives--;
-			//
-
-			//if (dead) {
-			//	// Death animation is not shown if the player dies by falling
-			//	if (!deathByFall)
-			//		//animation = &death;
-
-			//	// Restarting the level in case the player dies
-			//	if (App->fade->IsFading() == 0)
-			//	{
-			//		position.x = initialPosition.x;
-			//		position.y = initialPosition.y;
-			//		fallingSpeed = initialFallingSpeed;
-			//		App->render->camera.x = App->render->initialCameraX;
-			//		App->render->camera.y = App->render->initialCameraY;
-			//		jumping = false;
-			//		facingRight = true;
-			//		deathByFall = false;
-			//		playedSound = false;
-
-			//		// Resetting the animation
-			//		//death.Reset();
-			//		attackLeft.Reset();
-			//		attackRight.Reset();
-			//		animation = &idle;
-
-			//		dead = false;
-			//	}
-			//}
-
-			// Update collider position to player position
-			if (collider != nullptr)
-				collider->SetPos(position.x + margin.x, position.y + margin.y);
-
-			// ---------------------------------------------------------------------------------------------------------------------
-			// DRAWING EVERYTHING ON THE SCREEN
-			// ---------------------------------------------------------------------------------------------------------------------	
-
-			if (points % 10 == 0 && !extra_life && points != 0)
-			{
-				lives++;
-				extra_life = true;
-				score_points += 25;
-				App->audio->PlayFx(lifeup);
-			}
-
-			else if (points % 10 != 0)
-				extra_life = false;
-
-			// Blitting the player
-			SDL_Rect r = animation->GetCurrentFrame(dt);
-
-			if (!attacking) {
-				if (facingRight)
-					Draw(r);
-				else
-					Draw(r, true);
-			}
-			/*else if (animation == &attackLeft || animation == &attackRight){
-				if(facingRight)
-					Draw(r, false, 0, attackBlittingY);
-				else
-					Draw(r, false, attackBlittingX, attackBlittingY);
-			}
-		*/
-			hud->Update(dt);
-
-			// We update the camera to followe the player every frame
-			UpdateCameraPosition();
-
-			return true;
+		// Direction controls	
+		if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false) {			
+			position.x += horizontalSpeed * dt;
+			animation = &move_forward;					
 		}
+
+		if ((App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT && attacking == false)) {
+			position.x -= horizontalSpeed * dt;
+			animation = &move_backwards;
+		}
+
+		// Jump controls
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN) {
+			if (currentJumps < maxJumps) {
+				jumping = true;
+				verticalSpeed = initialVerticalSpeed;
+				currentJumps++;
+
+				if (currentJumps > 1)
+					App->audio->PlayFx(jumpSound);
+			}
+		}
+
+		if (jumping) {
+			position.y += verticalSpeed * dt;
+			verticalSpeed += verticalAcceleration * dt;
+
+			// While the player is falling
+			if (!attacking) animation = &jump;
+		}		
+
+		// Crouch management
+		if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT && attacking == false) {
+			animation = &crouch;
+			crouching = true;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_UP) {
+			crouch.Reset();
+			crouching = false;
+		}
+
+		// Punch control
+		if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN && attacking == false && kicking == false) {
+			attacking = true;
+			punching = true;
+			App->audio->PlayFx(attackSound);
+			attackCollider->type = COLLIDER_ATTACK;
+
+			if (crouching) 
+				animation = &crouch_m_punch;
+			else
+				animation = &forward_m_punch;			
+		}	
+		// Kick control
+		if (App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN && attacking == false && punching == false) {
+			attacking = true;
+			kicking = true;
+			App->audio->PlayFx(attackSound);
+			attackCollider->type = COLLIDER_ATTACK;
+
+			if (crouching)
+				animation = &crouch_m_kick;
+			else
+				animation = &forward_m_kick;
+		}
+		
+		// Update collider position to player position
+		if (collider != nullptr)
+			collider->SetPos(position.x + margin.x, position.y + margin.y);
+
+		// ---------------------------------------------------------------------------------------------------------------------
+		// DRAWING EVERYTHING ON THE SCREEN
+		// ---------------------------------------------------------------------------------------------------------------------			
+
+		// Blitting the player
+		SDL_Rect r = animation->GetCurrentFrame(dt);
+
+		if (!attacking) 
+			Draw(r);
+		else if (animation == &forward_m_punch)
+			Draw(r, false, 0, -12);
+		else if (animation == &crouch_m_punch)
+			Draw(r, false, 0, -21);
+		else if (animation == &forward_m_kick)
+			Draw(r, false, 0, -18);
+		else if (animation == &crouch_m_kick)
+			Draw(r, false, 0, -21);
+
+		// Punch management
+		if (crouch_m_punch.Finished() || forward_m_punch.Finished()) {
+
+			attackCollider->type = COLLIDER_NONE;
+
+			crouch_m_punch.Reset();
+			forward_m_punch.Reset();
+			attacking = false;
+			punching = false;
+		}
+		// Kick management
+		else 
+		if (crouch_m_kick.Finished() || forward_m_kick.Finished()) {
+
+			attackCollider->type = COLLIDER_NONE;
+
+			crouch_m_kick.Reset();
+			forward_m_kick.Reset();
+			attacking = false;
+			kicking = false;
+		}
+		else if (attackCollider != nullptr)
+			attackCollider->SetPos((int)position.x + rightAttackSpawnPos, (int)position.y + margin.y);
+
+		hud->Update(dt);
+
+		// We update the camera to followe the player every frame
+		UpdateCameraPosition();
+
+		return true;		
+	}
 }
 
 // Call modules after each loop iteration
 bool j1Player::PostUpdate() {
 
 	BROFILER_CATEGORY("PlayerPostUpdate", Profiler::Color::Yellow)
-
-	loading = false;
-
-	// Resetting the jump if touched the "ceiling"
-	wallAbove = false;
-
-	// Resetting the movement
-	wallInFront = false;
-	wallBehind = false;
 
 	return true;
 }
@@ -330,11 +249,7 @@ bool j1Player::Load(pugi::xml_node& data) {
 	position.x = data.child("player").child("position").attribute("x").as_int();
 	position.y = data.child("player").child("position").attribute("y").as_int();
 
-	GodMode = data.child("player").child("godmode").attribute("value").as_bool();
-
 	lives = data.child("player").child("lives").attribute("value").as_uint();
-
-	loading = true;
 
 	if (hud)
 		hud->Load(data);
@@ -354,8 +269,6 @@ bool j1Player::Save(pugi::xml_node& data) const {
 
 	pugi::xml_node life = data.append_child("lives");
 	life.append_attribute("value") = lives;
-
-	godmode.append_attribute("value") = GodMode;
 
 	if (hud)
 		hud->Save(data.append_child("hud"));
@@ -406,108 +319,25 @@ void j1Player::UpdateCameraPosition()
 void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 {
 	if (col_1->type == COLLIDER_PLAYER || col_1->type == COLLIDER_NONE)
-	{
-		//If the player collides with win colliders
-		if (col_2->type == COLLIDER_WIN)
-		{
-			feetOnGround = true;
-			App->fade->FadeToBlack();
+	{		
+		// If the player collides with a wall
+		if (col_2->type == COLLIDER_WALL) {
+			if (collider->rect.x + collider->rect.w >= col_2->rect.x + colisionMargin
+				&& collider->rect.x + colisionMargin < col_2->rect.x + col_2->rect.w) {				
+				//If the collision is with the ground
+				if (collider->rect.y + collider->rect.h >= col_2->rect.y
+					&& collider->rect.y < col_2->rect.y) {
 
-			if (App->scene1->active)
-				App->scene1->changingScene = true;
-		}
-		else
-		{
-			// If the player collides with a wall
-			if (col_2->type == COLLIDER_WALL) {
-				if (collider->rect.x + collider->rect.w >= col_2->rect.x + colisionMargin
-					&& collider->rect.x + colisionMargin < col_2->rect.x + col_2->rect.w) {
-					//If the collision is with the "ceiling"
-					if (collider->rect.y <= col_2->rect.y + col_2->rect.h
-						&& collider->rect.y + (collider->rect.h / 2) > col_2->rect.y + col_2->rect.h
-						&& verticalSpeed < 0) {
+					position.y = col_2->rect.y - collider->rect.h;
 
-						position.y = col_2->rect.y + col_2->rect.h;
-
-						wallAbove = true;
-						jumping = false;
-						fallingSpeed = initialFallingSpeed;
-						currentJumps++;
-					}
-					else
-					//If the collision is with the ground
-					if (loading == false) {
-						if (collider->rect.y + collider->rect.h >= col_2->rect.y
-							&& collider->rect.y < col_2->rect.y) {
-
-							position.y = col_2->rect.y - collider->rect.h;
-
-							feetOnGround = true;
-							jumping = false;
-							freefall = false;
-							verticalSpeed = initialVerticalSpeed;
-							fallingSpeed = initialFallingSpeed;
-							currentJumps = initialJumps;
-						}
-					}
-				}
-				if (collider->rect.y + collider->rect.h >= col_2->rect.y + colisionMargin
-					&& collider->rect.y <= col_2->rect.y + col_2->rect.h) {
-					//If the collision is with a wall in front
-					if (collider->rect.x + collider->rect.w >= col_2->rect.x
-						&& collider->rect.x <= col_2->rect.x && !wallAbove) {
-
-						wallInFront = true;
-
-						if (position.x + (collider->rect.w * 3 / 4) < col_2->rect.x)
-							position.x = col_2->rect.x - collider->rect.w - 1;
-					}
-					else
-					//If the collision is with a wall behind
-					if (collider->rect.x <= col_2->rect.x + col_2->rect.w
-						&& collider->rect.x + collider->rect.w >= col_2->rect.x + col_2->rect.w && !wallAbove) {
-
-						wallBehind = true;
-
-						if (position.x + (collider->rect.w / 4) < col_2->rect.x + col_2->rect.w)
-							position.x = col_2->rect.x + col_2->rect.w - colisionMargin;
-					}
+					jump.Reset();
+					jumping = false;
+					verticalSpeed = initialVerticalSpeed;
+					fallingSpeed = initialFallingSpeed;
+					currentJumps = initialJumps;
 				}				
-			}
-
-			//If the player collides with death colliders
-			if (col_2->type == COLLIDER_DEATH)
-			{
-				if(App->scene1->active)
-					App->scene1->settings_window->position = App->gui->settingsPosition;
-
-				App->fade->FadeToBlack(3.0f);
-
-				if (lives > 0)
-				{
-					if (col_2->rect.h < deathByFallColliderHeight)
-						deathByFall = true;
-					else {
-						if (!playedSound) {
-							App->audio->PlayFx(playerHurt);
-							playedSound = true;
-						}
-
-						jumping = false;
-						fallingSpeed = initialFallingSpeed;
-					}
-
-					dead = true;
-					App->audio->PlayFx(deathSound);
-					currentJumps == maxJumps;
-					points = 0;
-					score_points = 0;
-				}
-				else if (App->scene1->active)					
-					App->scene1->backToMenu = true;
-			}
-		}
-		
+			}			
+		}						
 	}
 };
 
@@ -539,7 +369,6 @@ void j1Player::LoadPlayerProperties() {
 	initialVerticalSpeed = speed.child("movement").attribute("initialVertical").as_float();
 	verticalSpeed = speed.child("movement").attribute("vertical").as_float();
 	horizontalSpeed = speed.child("movement").attribute("horizontal").as_float();
-	godModeSpeed = speed.child("movement").attribute("godmode").as_float();
 	initialFallingSpeed = speed.child("physics").attribute("initialFalling").as_float();
 	fallingSpeed = speed.child("physics").attribute("falling").as_float();
 	verticalAcceleration = speed.child("physics").attribute("acceleration").as_float();

@@ -22,13 +22,28 @@ j1Player::j1Player(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TYPE
 	animation = NULL;
 	
 	idle.LoadAnimations("idle");
-	run.LoadAnimations("run");
+	move_forward.LoadAnimations("move_forward");
+	move_backwards.LoadAnimations("move_backwards");
 	jump.LoadAnimations("jump");
-	fall.LoadAnimations("fall");
-	godmode.LoadAnimations("godmode");
-	attackRight.LoadAnimations("attackRight");
-	attackLeft.LoadAnimations("attackLeft");
-	death.LoadAnimations("death");
+	jump_forward.LoadAnimations("jump_forward");
+	crouch.LoadAnimations("crouch");
+	blocking.LoadAnimations("blocking");
+	l_punch.LoadAnimations("l_punch");
+	m_h_punch.LoadAnimations("m_h_punch");
+	forward_m_punch.LoadAnimations("forward_m_punch");
+	forward_l_punch.LoadAnimations("forward_l_punch");
+	forward_h_punch.LoadAnimations("forward_h_punch");
+	l_m_kick.LoadAnimations("l_m_kick");
+	h_kick.LoadAnimations("h_kick");
+	forward_l_kick.LoadAnimations("forward_l_kick");
+	forward_m_kick.LoadAnimations("forward_m_kick");
+	forward_h_kick.LoadAnimations("forward_h_kick");
+	crouch_l_punch.LoadAnimations("crouch_l_punch");
+	crouch_m_punch.LoadAnimations("crouch_m_punch");
+	crouch_h_punch.LoadAnimations("crouch_h_punch");
+	crouch_l_kick.LoadAnimations("crouch_l_kick");
+	crouch_m_kick.LoadAnimations("crouch_m_kick");
+	crouch_h_kick.LoadAnimations("crouch_h_kick");
 }
 
 j1Player::~j1Player() {}
@@ -38,7 +53,7 @@ bool j1Player::Start() {
 	
 	// Textures are loaded
 	LOG("Loading player textures");
-	sprites = App->tex->Load("textures/character/character.png");
+	sprites = App->tex->Load("textures/character/ryu.png");
 
 	// Audios are loaded
 	LOG("Loading player audios");
@@ -89,36 +104,13 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 	BROFILER_CATEGORY("PlayerUpdate", Profiler::Color::LightSeaGreen)
 
-	// ---------------------------------------------------------------------------------------------------------------------
-	// CONTROL OF THE PLAYER
-	// ---------------------------------------------------------------------------------------------------------------------
-	
-	if (player_start)
-	{
-		// GodMode controls
-		if (GodMode) {
+		// ---------------------------------------------------------------------------------------------------------------------
+		// CONTROL OF THE PLAYER
+		// ---------------------------------------------------------------------------------------------------------------------
 
-			animation = &godmode;
+		if (player_start)
+		{
 
-			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT)
-			{
-				position.x += godModeSpeed * dt;
-				facingRight = true;
-			}
-
-			if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT) 
-			{
-				position.x -= godModeSpeed * dt;
-				facingRight = false;
-			}
-
-			if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT)
-				position.y -= godModeSpeed * dt;
-
-			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT) 
-				position.y += godModeSpeed * dt;
-		}
-		else {
 			// Idle
 			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_IDLE
 				&& App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_IDLE
@@ -129,7 +121,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false) {
 				if (wallInFront == false && dead == false) {
 					position.x += horizontalSpeed * dt;
-					animation = &run;
+					animation = &move_forward;
 				}
 				else if (dead == true) {
 					facingRight = true;
@@ -142,7 +134,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 			if ((App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT && attacking == false)) {
 				if (wallBehind == false && dead == false) {
 					position.x -= horizontalSpeed * dt;
-					animation = &run;
+					animation = &move_backwards;
 				}
 				else if (dead == true) {
 					facingRight = false;
@@ -161,176 +153,159 @@ bool j1Player::Update(float dt, bool do_logic) {
 					fallingSpeed += verticalAcceleration * dt;
 				}
 
-				if (!attacking)
-					animation = &fall;
 			}
 
 			// Jump controls
 			if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN) {
-				if ((currentJumps == initialJumps && freefall == true) || (currentJumps < maxJumps && freefall == false)) {
 					jumping = true;
 					verticalSpeed = initialVerticalSpeed;
 					currentJumps++;
+					animation = &jump;
 
-					if(freefall == true || (currentJumps > 1 && freefall == false))
+					if (freefall == true || (currentJumps > 1 && freefall == false))
 						App->audio->PlayFx(jumpSound);
-				}
+				
 			}
 
-			// Reseting the jump every frame
-			feetOnGround = false;
-			if (dead && deathByFall == false)
-				animation = &death;
+			//		// Reseting the jump every frame
+			//		feetOnGround = false;
+			//		if (dead && deathByFall == false)
+			//			animation = &death;
 
-			if (jumping == true && animation != &death) {
-				// If the player touches a wall collider
-				if (feetOnGround) {
+			//		if (jumping == true && animation != &death) {
+			//			// If the player touches a wall collider
+			//			if (feetOnGround) {
 
-					animation = &idle;
-					jumping = false;
-				}
-				else {
+			//				animation = &idle;
+			//				jumping = false;
+			//			}
+			//			else {
 
-					if (wallAbove == false) {
-						position.y += verticalSpeed * dt;
-						verticalSpeed += verticalAcceleration * dt;
-					}
+			//				if (wallAbove == false) {
+			//					position.y += verticalSpeed * dt;
+			//					verticalSpeed += verticalAcceleration * dt;
+			//				}
 
-					// While the player is falling
-					if (!attacking) {
-						if (verticalSpeed <= 0) {
-							animation = &jump;
-						}
-						else if (verticalSpeed > 0) {
-							animation = &fall;
-						}
-					}
-				}
-			}
-		}
+			//				// While the player is falling
+			//				if (!attacking) {
+			//					if (verticalSpeed <= 0) {
+			//						animation = &jump;
+			//					}
+			//					else if (verticalSpeed > 0) {
+			//						animation = &fall;
+			//					}
+			//				}
+			//			}
+			//		}
+			//	}
 
-		// Attack control
-		if ((App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN || (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_X)) == KEY_DOWN)
-			&& attacking == false && GodMode == false && dead == false) {
-			attacking = true;
-			App->audio->PlayFx(attackSound);
-			attackCollider->type = COLLIDER_ATTACK;
-						
-			if (facingRight) {
-				animation = &attackRight;
-			}
-			else {
-				animation = &attackLeft;
-			}
-		}
+			//	// Attack control
+			//	if ((App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN || (SDL_GameControllerGetButton(App->input->controller, SDL_CONTROLLER_BUTTON_X)) == KEY_DOWN)
+			//		&& attacking == false && GodMode == false && dead == false) {
+			//		attacking = true;
+			//		App->audio->PlayFx(attackSound);
+			//		attackCollider->type = COLLIDER_ATTACK;
+			//					
+			//		if (facingRight) {
+			//			animation = &attackRight;
+			//		}
+			//		else {
+			//			animation = &attackLeft;
+			//		}
+			//	}
 
-		// Attack management
-		if ((facingRight && attackRight.Finished())
-			|| (!facingRight && attackLeft.Finished()) || dead == true) {
+			//	// Attack management
+			//	if ((facingRight && attackRight.Finished())
+			//		|| (!facingRight && attackLeft.Finished()) || dead == true) {
 
-			attackCollider->type = COLLIDER_NONE;
+			//		attackCollider->type = COLLIDER_NONE;
 
-			attackLeft.Reset();
-			attackRight.Reset();
-			animation = &idle;
-			attacking = false;
-		}
-		else if(attackCollider != nullptr) {
-			if (facingRight)
-				attackCollider->SetPos((int)position.x + rightAttackSpawnPos, (int)position.y + margin.y);
-			else
-				attackCollider->SetPos((int)position.x + leftAttackSpawnPos, (int)position.y + margin.y);
-		}
+			//		attackLeft.Reset();
+			//		attackRight.Reset();
+			//		animation = &idle;
+			//		attacking = false;
+			//	}
+			//	else if(attackCollider != nullptr) {
+			//		if (facingRight)
+			//			attackCollider->SetPos((int)position.x + rightAttackSpawnPos, (int)position.y + margin.y);
+			//		else
+			//			attackCollider->SetPos((int)position.x + leftAttackSpawnPos, (int)position.y + margin.y);
+			//	}
 
-		// God mode
-		if (App->input->GetKey(SDL_SCANCODE_F10) == j1KeyState::KEY_DOWN && dead == false)
-		{
-			GodMode = !GodMode;
+			//	if (dead && App->fade->IsFading() == false)
+			//		lives--;
+			//
 
-			if (GodMode == true)
+			//if (dead) {
+			//	// Death animation is not shown if the player dies by falling
+			//	if (!deathByFall)
+			//		//animation = &death;
+
+			//	// Restarting the level in case the player dies
+			//	if (App->fade->IsFading() == 0)
+			//	{
+			//		position.x = initialPosition.x;
+			//		position.y = initialPosition.y;
+			//		fallingSpeed = initialFallingSpeed;
+			//		App->render->camera.x = App->render->initialCameraX;
+			//		App->render->camera.y = App->render->initialCameraY;
+			//		jumping = false;
+			//		facingRight = true;
+			//		deathByFall = false;
+			//		playedSound = false;
+
+			//		// Resetting the animation
+			//		//death.Reset();
+			//		attackLeft.Reset();
+			//		attackRight.Reset();
+			//		animation = &idle;
+
+			//		dead = false;
+			//	}
+			//}
+
+			// Update collider position to player position
+			if (collider != nullptr)
+				collider->SetPos(position.x + margin.x, position.y + margin.y);
+
+			// ---------------------------------------------------------------------------------------------------------------------
+			// DRAWING EVERYTHING ON THE SCREEN
+			// ---------------------------------------------------------------------------------------------------------------------	
+
+			if (points % 10 == 0 && !extra_life && points != 0)
 			{
-				collider->type = COLLIDER_NONE;
-				animation = &godmode;
-
+				lives++;
+				extra_life = true;
+				score_points += 25;
+				App->audio->PlayFx(lifeup);
 			}
-			else if (GodMode == false)
-			{
-				collider->type = COLLIDER_PLAYER;
+
+			else if (points % 10 != 0)
+				extra_life = false;
+
+			// Blitting the player
+			SDL_Rect r = animation->GetCurrentFrame(dt);
+
+			if (!attacking) {
+				if (facingRight)
+					Draw(r);
+				else
+					Draw(r, true);
 			}
+			/*else if (animation == &attackLeft || animation == &attackRight){
+				if(facingRight)
+					Draw(r, false, 0, attackBlittingY);
+				else
+					Draw(r, false, attackBlittingX, attackBlittingY);
+			}
+		*/
+			hud->Update(dt);
+
+			// We update the camera to followe the player every frame
+			UpdateCameraPosition();
+
+			return true;
 		}
-		if (dead && App->fade->IsFading() == false)
-			lives--;
-	}
-
-	if (dead) {
-		// Death animation is not shown if the player dies by falling
-		if (!deathByFall)
-			animation = &death;
-
-		// Restarting the level in case the player dies
-		if (App->fade->IsFading() == 0)
-		{
-			position.x = initialPosition.x;
-			position.y = initialPosition.y;
-			fallingSpeed = initialFallingSpeed;
-			App->render->camera.x = App->render->initialCameraX;
-			App->render->camera.y = App->render->initialCameraY;
-			jumping = false;
-			facingRight = true;
-			deathByFall = false;
-			playedSound = false;
-
-			// Resetting the animation
-			death.Reset();
-			attackLeft.Reset();
-			attackRight.Reset();
-			animation = &idle;
-
-			dead = false;
-		}
-	}
-
-	// Update collider position to player position
-	if (collider != nullptr)
-		collider->SetPos(position.x + margin.x, position.y + margin.y);
-
-	// ---------------------------------------------------------------------------------------------------------------------
-	// DRAWING EVERYTHING ON THE SCREEN
-	// ---------------------------------------------------------------------------------------------------------------------	
-
-	if (points % 10 == 0 && !extra_life && points != 0)
-	{
-		lives++;
-		extra_life = true;
-		score_points += 25;
-		App->audio->PlayFx(lifeup);
-	}
-
-	else if (points % 10 != 0)
-		extra_life = false;
-
-	// Blitting the player
-	SDL_Rect r = animation->GetCurrentFrame(dt);
-
-	if (!attacking) {
-		if (facingRight)
-			Draw(r);
-		else
-			Draw(r, true);
-	}
-	else if (animation == &attackLeft || animation == &attackRight){
-		if(facingRight)
-			Draw(r, false, 0, attackBlittingY);
-		else
-			Draw(r, false, attackBlittingX, attackBlittingY);
-	}
-
-	hud->Update(dt);
-
-	// We update the camera to followe the player every frame
-	UpdateCameraPosition();
-
-	return true;
 }
 
 // Call modules after each loop iteration
@@ -361,16 +336,6 @@ bool j1Player::Load(pugi::xml_node& data) {
 	lives = data.child("player").child("lives").attribute("value").as_uint();
 
 	loading = true;
-
-	if (GodMode == true)
-	{
-		collider->type = COLLIDER_NONE;
-		animation = &godmode;
-	}
-	else if (GodMode == false)
-	{
-		collider->type = COLLIDER_PLAYER;
-	}
 
 	if (hud)
 		hud->Load(data);

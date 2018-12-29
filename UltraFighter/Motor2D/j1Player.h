@@ -44,13 +44,28 @@ public:
 
 	// Animations of the player
 	Animation idle;
-	Animation run;
+	Animation move_forward;
+	Animation move_backwards;
 	Animation jump;
-	Animation fall;
-	Animation godmode;
-	Animation attackRight;
-	Animation attackLeft;
-	Animation death;
+	Animation jump_forward;
+	Animation crouch;
+	Animation blocking;
+	Animation l_punch;
+	Animation m_h_punch;
+	Animation forward_m_punch;
+	Animation forward_l_punch;
+	Animation forward_h_punch;
+	Animation l_m_kick;
+	Animation h_kick;
+	Animation forward_l_kick;
+	Animation forward_m_kick;
+	Animation forward_h_kick;
+	Animation crouch_l_punch;
+	Animation crouch_m_punch;
+	Animation crouch_h_punch;
+	Animation crouch_l_kick;
+	Animation crouch_m_kick;
+	Animation crouch_h_kick;
 
 	// Sounds
 	uint deathSound;

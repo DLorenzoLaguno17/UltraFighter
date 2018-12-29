@@ -10,6 +10,7 @@
 struct Collider;
 class Animation;
 struct SDL_Texture;
+struct Attack;
 
 enum ENTITY_TYPES;
 

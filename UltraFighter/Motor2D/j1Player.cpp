@@ -110,7 +110,6 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 		if (player_start)
 		{
-
 			// Idle
 			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_IDLE
 				&& App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_IDLE
@@ -477,7 +476,7 @@ void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 			}
 
 			//If the player collides with death colliders
-			if (col_2->type == COLLIDER_DEATH || col_2->type == COLLIDER_ENEMY)
+			if (col_2->type == COLLIDER_DEATH)
 			{
 				if(App->scene1->active)
 					App->scene1->settings_window->position = App->gui->settingsPosition;

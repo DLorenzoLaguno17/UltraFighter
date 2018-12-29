@@ -11,23 +11,19 @@ enum COLLIDER_TYPE
 {
 	COLLIDER_NONE,
 	COLLIDER_WALL,
-	COLLIDER_HOOK,
 	COLLIDER_PLAYER,
-	COLLIDER_ENEMY,
 	COLLIDER_DEATH,
 	COLLIDER_WIN,
 	COLLIDER_ATTACK,
-	COLLIDER_COIN,
 	COLLIDER_MAX,
 };
 
-enum COLLISION_DIRECTION
-{
-	NONE_COLLISION,
-	UP_COLLISION,
-	DOWN_COLLISION,
-	RIGHT_COLLISION,
-	LEFT_COLLISION
+enum ATTACK_TYPE {
+	NO_ATTACK,
+	PUNCH,
+	KICK,
+	SPECIAL,
+	BLOCK
 };
 
 struct Collider
@@ -42,7 +38,24 @@ struct Collider
 
 	void SetPos(int x, int y) { rect.x = x; rect.y = y; }
 	bool CheckCollision(const SDL_Rect& r) const;
-	COLLISION_DIRECTION CheckDirection(const SDL_Rect& r) const;
+};
+
+struct Attack {
+	ATTACK_TYPE type;
+	uint damage;
+	uint priority;
+	Collider* collider = nullptr;
+
+	Attack(ATTACK_TYPE type, uint damage, uint priority, Collider* collider = nullptr) : 
+		type(type), damage(damage), priority(priority), collider(collider) {}
+
+	// Checks the attack priority among itself and another attack
+	Attack* priorityAttack(Attack* interactingAttack) {
+		if (interactingAttack->priority > priority)
+			return interactingAttack;
+		else
+			return this;
+	}
 };
 
 class j1Collisions : public j1Module

@@ -25,6 +25,8 @@
 j1Scene1::j1Scene1() : j1Module()
 {
 	name.create("scene1");
+
+	
 }
 
 // Destructor
@@ -55,8 +57,39 @@ bool j1Scene1::Start()
 {
 	if (active)
 	{
-		// The map is loaded
-		App->map->Draw();
+		//Loading background
+		graphics = App->tex->Load("maps/map.png");
+
+		//Background
+		background.x = 0;
+		background.y = 0;
+		background.w = 512;
+		background.h = 224;
+
+		//Sky
+		sky.x = 0;
+		sky.y = 613;
+		sky.w = 691;
+		sky.h = 105;
+
+		//Grid on the left
+		grid.x = 0;
+		grid.y = 472;
+		grid.w = 94;
+		grid.h = 100;
+
+		//Animations
+		couple_left.PushBack({ 0,366,64,97 });
+		couple_left.PushBack({ 66,366,64,97 });
+		couple_left.speed = 0.1f;
+
+		guys.PushBack({ 140,392,98, 71 });
+		guys.PushBack({ 243,392,98, 71 });
+		guys.speed = 0.1f;
+
+		couple_right.PushBack({ 347,384,81,79 });
+		couple_right.PushBack({ 432,384,81,79 });
+		couple_right.speed = 0.1f;
 
 		// The audio is played	
 		App->audio->PlayMusic("audio/Streetfighter2/Sound/in_game_music.ogg", 1.0f);
@@ -131,10 +164,7 @@ bool j1Scene1::Update(float dt)
 		settings_window->visible = !settings_window->visible;
 		App->gamePaused = !App->gamePaused;
 
-		if (App->render->camera.x != 0 && App->render->camera.x > App->entity->player->cameraLimit)
-			settings_window->position = { (int)App->entity->player->position.x - App->gui->settingsPosition.x, App->gui->settingsPosition.y };
-		else
-			settings_window->position.x = App->gui->settingsPosition.x - App->render->camera.x / 4;
+		settings_window->position.x = App->gui->settingsPosition.x - App->render->camera.x / 3;
 
 		for (p2List_item<j1Button*>* item = scene1Buttons.start; item != nullptr; item = item->next) {
 			if (item->data->parent == settings_window) {
@@ -235,7 +265,12 @@ bool j1Scene1::Update(float dt)
 	// DRAWING EVERYTHING ON THE SCREEN
 	// ---------------------------------------------------------------------------------------------------------------------	
 
-	App->map->Draw();	
+	App->render->Blit(graphics, 0, 35, &sky);
+	App->render->Blit(graphics, 0, 35, &background);
+	App->render->Blit(graphics, 0, 100, &grid);
+	App->render->Blit(graphics, 0, 150, &(couple_left.GetCurrentFrame(0.3f)));
+	App->render->Blit(graphics, 100, 150, &(guys.GetCurrentFrame(0.2f)));
+	App->render->Blit(graphics, 200, 150, &(couple_right.GetCurrentFrame(0.4f)));
 
 	return true;
 }

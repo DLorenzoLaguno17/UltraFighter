@@ -22,7 +22,6 @@ j1SceneMenu::j1SceneMenu()
 	name.create("menu");
 
 	player.LoadAnimations("idle");
-	harpy.LoadEnemyAnimations("idle", "harpy");
 }
 
 j1SceneMenu::~j1SceneMenu() {}

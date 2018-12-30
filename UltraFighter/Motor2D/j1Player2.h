@@ -1,5 +1,5 @@
-#ifndef __j1PLAYER_H__
-#define __j1PLAYER_H__
+#ifndef __j1PLAYER2_H__
+#define __j1PLAYER2_H__
 
 #include "PugiXml/src/pugixml.hpp"
 #include "p2Point.h"
@@ -10,14 +10,14 @@ struct SDL_Texture;
 struct Collider;
 class j1Hud;
 
-class j1Player : public j1Entity
+class j1Player2 : public j1Entity
 {
 
 public:
-	j1Player(int x, int y, ENTITY_TYPES type);
+	j1Player2(int x, int y, ENTITY_TYPES type);
 
 	// Destructor
-	virtual ~j1Player();
+	virtual ~j1Player2();
 
 	// Called before the first frame
 	bool Start();
@@ -118,4 +118,4 @@ private:
 	bool loadedAudios = false;
 };
 
-#endif // __jPLAYER_H__
+#endif // __jPLAYER2_H__

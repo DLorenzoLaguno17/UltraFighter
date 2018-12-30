@@ -8,6 +8,7 @@
 #include "j1Entity.h"
 #include "j1Scene1.h"
 #include "j1Player.h"
+#include "j1Player2.h"
 #include "j1Hook.h"
 #include "Brofiler/Brofiler.h"
 
@@ -98,9 +99,13 @@ j1Entity* j1EntityManager::CreateEntity(ENTITY_TYPES type, int x, int y)
 	j1Entity* ret = nullptr;
 	switch (type)
 	{
-	case PLAYER: 
+	case PLAYER1: 
 		ret = new j1Player(x, y, type);
 	if (ret != nullptr) entities.add(ret); break;
+
+	case PLAYER2:
+		ret = new j1Player2(x, y, type);
+		if (ret != nullptr) entities.add(ret); break;
 
 	}
 	return ret;
@@ -122,7 +127,8 @@ void j1EntityManager::AddEnemy(int x, int y, ENTITY_TYPES type)
 
 void j1EntityManager::CreatePlayer() 
 {
-	player = (j1Player*)CreateEntity(PLAYER);
+	player = (j1Player*)CreateEntity(PLAYER1);
+	player2 = (j1Player2*)CreateEntity(PLAYER2);
 }
 
 void j1EntityManager::OnCollision(Collider* c1, Collider* c2)

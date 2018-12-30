@@ -61,12 +61,24 @@ public:
 private:
 	SDL_Texture * debug_tex = nullptr;
 	SDL_Texture* gui_tex = nullptr;
+	
 
 	_TTF_Font* font = nullptr;
 
 	bool closeSettings = false;
 	bool continueGame = true;
 	bool resettingLevel = false;	
+
+public:
+
+	SDL_Texture * graphics = nullptr;
+	SDL_Rect background;
+	SDL_Rect sky;
+	SDL_Rect grid;
+	Animation couple_left;
+	Animation guys;
+	Animation couple_right;
+
 };
 
 #endif // __j1SCENE1_H__

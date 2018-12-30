@@ -76,6 +76,9 @@
     <ClCompile Include="j1Player.cpp">
       <Filter>Development\Modules\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="j1Player2.cpp">
+      <Filter>Development\Modules\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1Textures.h">
@@ -175,6 +178,9 @@
       <Filter>Development\Modules\GraphicUserInterface</Filter>
     </ClInclude>
     <ClInclude Include="j1Player.h">
+      <Filter>Development\Modules\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Player2.h">
       <Filter>Development\Modules\Entities</Filter>
     </ClInclude>
   </ItemGroup>

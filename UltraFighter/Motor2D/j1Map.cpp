@@ -23,12 +23,6 @@ j1Map::j1Map()
 	sky.w = 691;
 	sky.h = 105;
 
-	/*//Box
-	box.x = 884;
-	box.y = 884;
-	box.w = ;
-	box.h = ;*/
-
 	//Grid on the left
 	grid.x = 0;
 	grid.y = 472;

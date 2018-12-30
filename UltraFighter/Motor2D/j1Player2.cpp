@@ -193,7 +193,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 					}
 					else {
 						animation = &crouch_l_kick;
-						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK2, App->entity);
+						attackCollider = App->collisions->AddCollider({ (int)position.x - 33, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK2, App->entity);
 					}
 				}
 				else {
@@ -223,9 +223,14 @@ bool j1Player2::Update(float dt, bool do_logic) {
 			// Blitting the player
 			SDL_Rect r = animation->GetCurrentFrame(dt);
 
-			if (!attacking)
-				Draw(r, true, 0, 12);
-			else if (animation == &m_h_punch)
+			if (!attacking) {
+				if(crouching)
+					Draw(r, true, 0, 22);
+				else
+					Draw(r, true, 0, 12);
+			}
+			else {
+			if (animation == &m_h_punch)
 				Draw(r, true, 0, -12);
 			else if (animation == &short_punch)
 				Draw(r, true, 0, -12);
@@ -240,11 +245,12 @@ bool j1Player2::Update(float dt, bool do_logic) {
 			else if (animation == &crouch_m_kick)
 				Draw(r, true, 0, -21);
 			else if (animation == &crouch_l_kick)
-				Draw(r, true, 0, -21);
+				Draw(r, true, -12, 37);
 			else if (animation == &spin_kick)
 				Draw(r, true, 0, -21);
 			else if (animation == &high_kick)
 				Draw(r, true, 0, -21);
+			}
 
 			// Punch management
 			if (crouch_m_punch.Finished() || m_h_punch.Finished() || short_punch.Finished()

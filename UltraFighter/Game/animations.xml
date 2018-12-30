@@ -333,9 +333,9 @@
     </crouch_l_m_h_punch>
 	
 	<crouch_l_kick loop="false" speed="10.0f">
-      <animation x="218" y="384" w="46" h="62"/>
-      <animation x="269" y="402" w="70" h="44"/>
-      <animation x="343" y="392" w="46" h="54"/>
+      <animation x="226" y="392" w="46" h="53"/>
+      <animation x="277" y="392" w="62" h="53"/>
+      <animation x="226" y="392" w="46" h="53"/>
     </crouch_l_kick>
 	
 	<crouch_m_kick loop="false" speed="10.0f">

@@ -12,7 +12,7 @@
   </renderer>
 
   <window>
-    <resolution width="1024" height="768" scale="4"/>
+    <resolution width="1024" height="768" scale="3"/>
     <fullscreen value="false"/>
     <borderless value="false"/>
     <resizable value="false"/>
@@ -28,7 +28,7 @@
 	<margin x="2" y="2" colisionMargin="3"/>
 	<deathByFallCollider h="8"/>
 	<speed>
-	  <movement initialVertical="-150.0f" vertical="-150.0f" horizontal="80.0f" godmode="120.0f"/>
+	  <movement initialVertical="-210.0f" vertical="-150.0f" horizontal="80.0f" godmode="120.0f"/>
 	  <physics initialFalling="0.0f" falling="0.0f" acceleration="550.0f"  jumpNumber="0" maxJumps="2"/>
 	</speed>
 	<attack blittingX="-15" blittingY="-2" rightColliderSpawnPos="20" leftColliderSpawnPos="-16"/>

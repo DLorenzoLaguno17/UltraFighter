@@ -19,7 +19,7 @@
       <animation x="401" y="8" w="43" h="91"/>
     </move_backwards>
     
-    <jump loop="false" speed="12.0f">
+    <jump loop="false" speed="8.0f">
       <animation x="452" y="8" w="42" h="91"/>
       <animation x="503" y="8" w="39" h="91"/>
       <animation x="545" y="8" w="37" h="91"/>
@@ -55,12 +55,12 @@
       <animation x="117" y="112" w="43" h="103"/>
     </l_punch>
     
-    <m_h_punch loop="false" speed="12.0f">
-      <animation x="170" y="112" w="43" h="103"/>
-      <animation x="218" y="112" w="43" h="103"/>
+    <m_h_punch loop="false" speed="10.0f">
+      <animation x="170" y="112" w="48" h="103"/>
+      <animation x="218" y="112" w="50" h="103"/>
       <animation x="274" y="112" w="76" h="103"/>
       <animation x="353" y="112" w="51" h="103"/>
-      <animation x="411" y="112" w="43" h="103"/>
+      <animation x="411" y="112" w="46" h="103"/>
     </m_h_punch>
     
     <forward_m_punch loop="false" speed="12.0f">
@@ -87,7 +87,7 @@
       <animation x="1253" y="112" w="61" h="103"/>
     </forward_h_punch>
     
-    <l_m_kick loop="false" speed="12.0f">
+    <l_m_kick loop="false" speed="10.0f">
       <animation x="6" y="237" w="49" h="109"/>
       <animation x="62" y="237" w="68" h="109"/>
       <animation x="135" y="237" w="49" h="109"/>
@@ -150,10 +150,10 @@
       <animation x="790" y="362" w="49" h="112"/>
     </crouch_l_kick>
     
-    <crouch_m_kick loop="false" speed="6.0f">
-      <animation x="846" y="362" w="49" h="112"/>
+    <crouch_m_kick loop="false" speed="8.0f">
+      <animation x="846" y="362" w="50" h="112"/>
       <animation x="900" y="362" w="89" h="112"/>
-      <animation x="993" y="362" w="48" h="112"/>
+      <animation x="993" y="362" w="50" h="112"/>
     </crouch_m_kick>
   
     <crouch_h_kick loop="false" speed="12.0f">

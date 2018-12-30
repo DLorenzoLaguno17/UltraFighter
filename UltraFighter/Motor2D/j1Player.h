@@ -55,17 +55,17 @@ public:
 	Animation forward_m_punch;
 	Animation forward_l_punch;
 	Animation forward_h_punch;
-	Animation l_m_kick;
-	Animation h_kick;
-	Animation forward_l_kick;
 	Animation forward_m_kick;
+	Animation high_kick;
+	Animation forward_l_kick;
+	Animation melee_m_kick;
 	Animation forward_h_kick;
 	Animation crouch_l_punch;
 	Animation crouch_m_punch;
 	Animation crouch_h_punch;
 	Animation crouch_l_kick;
 	Animation crouch_m_kick;
-	Animation crouch_h_kick;
+	Animation spin_kick;
 
 	// Sounds
 	uint deathSound;

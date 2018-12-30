@@ -33,17 +33,17 @@ j1Player::j1Player(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TYPE
 	forward_m_punch.LoadAnimations("forward_m_punch");
 	forward_l_punch.LoadAnimations("forward_l_punch");
 	forward_h_punch.LoadAnimations("forward_h_punch");
-	l_m_kick.LoadAnimations("l_m_kick");
-	h_kick.LoadAnimations("h_kick");
+	forward_m_kick.LoadAnimations("l_m_kick");
+	high_kick.LoadAnimations("h_kick");
 	forward_l_kick.LoadAnimations("forward_l_kick");
-	forward_m_kick.LoadAnimations("forward_m_kick");
+	melee_m_kick.LoadAnimations("forward_m_kick");
 	forward_h_kick.LoadAnimations("forward_h_kick");
 	crouch_l_punch.LoadAnimations("crouch_l_punch");
 	crouch_m_punch.LoadAnimations("crouch_m_punch");
 	crouch_h_punch.LoadAnimations("crouch_h_punch");
 	crouch_l_kick.LoadAnimations("crouch_l_kick");
 	crouch_m_kick.LoadAnimations("crouch_m_kick");
-	crouch_h_kick.LoadAnimations("crouch_h_kick");
+	spin_kick.LoadAnimations("crouch_h_kick");
 }
 
 j1Player::~j1Player() {}
@@ -77,7 +77,7 @@ bool j1Player::Start() {
 	position.x = initialPosition.x;
 	position.y = initialPosition.y;
 
-	collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_PLAYER, App->entity);
+	collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y, 35, 85 }, COLLIDER_PLAYER, App->entity);
 	
 	attackCollider = App->collisions->AddCollider({ (int)position.x + rightAttackSpawnPos, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_NONE, App->entity);
 
@@ -115,26 +115,21 @@ bool j1Player::Update(float dt, bool do_logic) {
 			animation = &idle;
 
 		// Direction controls	
-		if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false) {			
+		if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false) {			
 			position.x += horizontalSpeed * dt;
 			animation = &move_forward;					
 		}
 
-		if ((App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT && attacking == false)) {
+		if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false) {
 			position.x -= horizontalSpeed * dt;
 			animation = &move_backwards;
 		}
 
 		// Jump controls
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN) {
-			if (currentJumps < maxJumps) {
-				jumping = true;
-				verticalSpeed = initialVerticalSpeed;
-				currentJumps++;
-
-				if (currentJumps > 1)
-					App->audio->PlayFx(jumpSound);
-			}
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN && jumping == false) {
+			jumping = true;
+			verticalSpeed = initialVerticalSpeed;
+			currentJumps++;
 		}
 
 		if (jumping) {
@@ -156,7 +151,8 @@ bool j1Player::Update(float dt, bool do_logic) {
 		}
 
 		// Punch control
-		if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN && attacking == false && kicking == false) {
+		if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN 
+			&& attacking == false && kicking == false && jumping == false) {
 			attacking = true;
 			punching = true;
 			App->audio->PlayFx(attackSound);
@@ -165,19 +161,31 @@ bool j1Player::Update(float dt, bool do_logic) {
 			if (crouching) 
 				animation = &crouch_m_punch;
 			else
-				animation = &forward_m_punch;			
+				animation = &m_h_punch;
 		}	
 		// Kick control
-		if (App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN && attacking == false && punching == false) {
+		if (App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN 
+			&& attacking == false && punching == false && jumping == false) {
 			attacking = true;
 			kicking = true;
 			App->audio->PlayFx(attackSound);
 			attackCollider->type = COLLIDER_ATTACK;
 
-			if (crouching)
-				animation = &crouch_m_kick;
-			else
-				animation = &forward_m_kick;
+			if (crouching) {
+				if(App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT)
+					animation = &spin_kick;
+				else
+					animation = &crouch_m_kick;
+			}
+			else {
+				if (0 /*asdfasdf*/)
+					animation = &forward_l_kick;
+				else if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT)
+					animation = &high_kick;
+				else
+					animation = &forward_m_kick;
+			}
+
 		}
 		
 		// Update collider position to player position
@@ -193,33 +201,43 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 		if (!attacking) 
 			Draw(r);
-		else if (animation == &forward_m_punch)
+		else if (animation == &m_h_punch)
 			Draw(r, false, 0, -12);
 		else if (animation == &crouch_m_punch)
 			Draw(r, false, 0, -21);
 		else if (animation == &forward_m_kick)
 			Draw(r, false, 0, -18);
+		else if (animation == &forward_l_kick)
+			Draw(r, false, 0, -18);
 		else if (animation == &crouch_m_kick)
+			Draw(r, false, 0, -21);
+		else if (animation == &spin_kick)
+			Draw(r, false, 0, -21);
+		else if (animation == &high_kick)
 			Draw(r, false, 0, -21);
 
 		// Punch management
-		if (crouch_m_punch.Finished() || forward_m_punch.Finished()) {
+		if (crouch_m_punch.Finished() || m_h_punch.Finished()) {
 
 			attackCollider->type = COLLIDER_NONE;
 
 			crouch_m_punch.Reset();
-			forward_m_punch.Reset();
+			m_h_punch.Reset();
 			attacking = false;
 			punching = false;
 		}
 		// Kick management
 		else 
-		if (crouch_m_kick.Finished() || forward_m_kick.Finished()) {
+		if (crouch_m_kick.Finished() || forward_h_kick.Finished() || forward_m_kick.Finished() 
+			|| high_kick.Finished() || spin_kick.Finished()) {
 
 			attackCollider->type = COLLIDER_NONE;
 
 			crouch_m_kick.Reset();
+			forward_l_kick.Reset();
 			forward_m_kick.Reset();
+			spin_kick.Reset();
+			high_kick.Reset();
 			attacking = false;
 			kicking = false;
 		}
@@ -299,9 +317,6 @@ bool j1Player::CleanUp() {
 
 void j1Player::UpdateCameraPosition()
 {
-	if(App->render->camera.x > cameraLimit)
-		App->render->camera.x = -position.x * 4 + 400;	
-
 	//Limit X camera position
 	if (App->render->camera.x > 0)
 		App->render->camera.x = 0;
@@ -334,7 +349,6 @@ void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 					jumping = false;
 					verticalSpeed = initialVerticalSpeed;
 					fallingSpeed = initialFallingSpeed;
-					currentJumps = initialJumps;
 				}				
 			}			
 		}						

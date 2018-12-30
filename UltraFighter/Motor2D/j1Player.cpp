@@ -44,6 +44,8 @@ j1Player::j1Player(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TYPE
 	crouch_l_kick.LoadAnimations("crouch_l_kick");
 	crouch_m_kick.LoadAnimations("crouch_m_kick");
 	spin_kick.LoadAnimations("crouch_h_kick");
+	receive_damage_idle.LoadAnimations("damage_idle");
+	receive_damage_crouch.LoadAnimations("damage_crouch");
 }
 
 j1Player::~j1Player() {}
@@ -101,7 +103,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 	BROFILER_CATEGORY("PlayerUpdate", Profiler::Color::LightSeaGreen)
 
-	if (player_start)
+	if (player_start && receivedDmg == false)
 	{
 		// ---------------------------------------------------------------------------------------------------------------------
 		// CONTROL OF THE PLAYER
@@ -115,7 +117,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 			animation = &idle;
 
 		// Direction controls	
-		if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false) {			
+		if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false ) {
 			position.x += horizontalSpeed * dt;
 			animation = &move_forward;					
 		}
@@ -141,7 +143,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		}		
 
 		// Crouch management
-		if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT && attacking == false) {
+		if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT && attacking == false && jumping == false) {
 			animation = &crouch;
 			crouching = true;
 		}
@@ -163,6 +165,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 			else
 				animation = &m_h_punch;
 		}	
+
 		// Kick control
 		if (App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN 
 			&& attacking == false && punching == false && jumping == false) {
@@ -174,6 +177,8 @@ bool j1Player::Update(float dt, bool do_logic) {
 			if (crouching) {
 				if(App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT)
 					animation = &spin_kick;
+				else if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT)
+						animation = &crouch_l_kick;
 				else
 					animation = &crouch_m_kick;
 			}
@@ -211,6 +216,8 @@ bool j1Player::Update(float dt, bool do_logic) {
 			Draw(r, false, 0, -18);
 		else if (animation == &crouch_m_kick)
 			Draw(r, false, 0, -21);
+		else if (animation == &crouch_l_kick)
+			Draw(r, false, 0, -21);
 		else if (animation == &spin_kick)
 			Draw(r, false, 0, -21);
 		else if (animation == &high_kick)
@@ -229,11 +236,12 @@ bool j1Player::Update(float dt, bool do_logic) {
 		// Kick management
 		else 
 		if (crouch_m_kick.Finished() || forward_h_kick.Finished() || forward_m_kick.Finished() 
-			|| high_kick.Finished() || spin_kick.Finished()) {
+			|| high_kick.Finished() || spin_kick.Finished() || crouch_l_kick.Finished()) {
 
 			attackCollider->type = COLLIDER_NONE;
 
-			crouch_m_kick.Reset();
+			crouch_m_kick.Reset(); 
+			crouch_l_kick.Reset();
 			forward_l_kick.Reset();
 			forward_m_kick.Reset();
 			spin_kick.Reset();
@@ -350,7 +358,7 @@ void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 					verticalSpeed = initialVerticalSpeed;
 					fallingSpeed = initialFallingSpeed;
 				}				
-			}			
+			}
 		}						
 	}
 };

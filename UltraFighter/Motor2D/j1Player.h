@@ -66,6 +66,8 @@ public:
 	Animation crouch_l_kick;
 	Animation crouch_m_kick;
 	Animation spin_kick;
+	Animation receive_damage_idle;
+	Animation receive_damage_crouch;
 
 	// Sounds
 	uint deathSound;
@@ -123,6 +125,7 @@ public:
 	bool attacking = false;
 	bool punching = false;
 	bool kicking = false;
+	bool receivedDmg = false;
 
 	int cameraLimit;
 

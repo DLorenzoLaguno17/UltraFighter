@@ -50,7 +50,7 @@ public:
 	Animation jump_forward;
 	Animation crouch;
 	Animation blocking;
-	Animation l_punch;
+	Animation short_punch;
 	Animation m_h_punch;
 	Animation forward_m_punch;
 	Animation forward_l_punch;
@@ -78,8 +78,6 @@ public:
 
 	// To know the last direction the character was moving to
 	bool facingRight = true;
-
-	fPoint initialPosition;
 
 	// Size of the player collider, where x = w and y = h
 	iPoint playerSize;
@@ -127,10 +125,7 @@ public:
 	bool kicking = false;
 	bool receivedDmg = false;
 
-	int cameraLimit;
-
 private:
-	int playerLimit;
 
 	bool loadedAudios = false;
 };

@@ -41,12 +41,12 @@ public:
 		}
 	}
 
-	void LoadEnemyAnimations(p2SString name, p2SString enemy)
+	void LoadAnimations2(p2SString name)
 	{
 		pugi::xml_parse_result result = animations_file.load_file("animations.xml");
 		if (result != NULL)
 		{
-			pugi::xml_node animation_name = animations_file.child("animations").child("enemies").child(enemy.GetString()).child(name.GetString());
+			pugi::xml_node animation_name = animations_file.child("animations").child("player2").child(name.GetString());
 			loop = animation_name.attribute("loop").as_bool();
 			speed = animation_name.attribute("speed").as_float();
 			for (pugi::xml_node animation = animation_name.child("animation"); animation; animation = animation.next_sibling("animation"))

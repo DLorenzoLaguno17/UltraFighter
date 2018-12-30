@@ -164,10 +164,7 @@ bool j1Scene1::Update(float dt)
 		settings_window->visible = !settings_window->visible;
 		App->gamePaused = !App->gamePaused;
 
-		if (App->render->camera.x != 0 && App->render->camera.x > App->entity->player->cameraLimit)
-			settings_window->position = { (int)App->entity->player->position.x - App->gui->settingsPosition.x, App->gui->settingsPosition.y };
-		else
-			settings_window->position.x = App->gui->settingsPosition.x - App->render->camera.x / 4;
+		settings_window->position.x = App->gui->settingsPosition.x - App->render->camera.x / 3;
 
 		for (p2List_item<j1Button*>* item = scene1Buttons.start; item != nullptr; item = item->next) {
 			if (item->data->parent == settings_window) {

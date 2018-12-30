@@ -14,7 +14,6 @@ j1Hud::j1Hud()
 	animation = NULL;
 	sprites = nullptr;
 	
-	idle.LoadEnemyAnimations("idle", "coin");
 }
 
 j1Hud::~j1Hud() {}

@@ -80,8 +80,6 @@ bool j1Player::Start() {
 	position.y = initialPosition.y;
 
 	collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y, 35, 85 }, COLLIDER_PLAYER1, App->entity);
-	
-	attackCollider = App->collisions->AddCollider({ (int)position.x + rightAttackSpawnPos, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_NONE, App->entity);
 
 	hud = new j1Hud();
 	hud->Start();
@@ -158,7 +156,6 @@ bool j1Player::Update(float dt, bool do_logic) {
 			attacking = true;
 			punching = true;
 			App->audio->PlayFx(attackSound);
-			attackCollider->type = COLLIDER_ATTACK1;
 
 			if (crouching) 
 				animation = &crouch_m_punch;
@@ -172,23 +169,33 @@ bool j1Player::Update(float dt, bool do_logic) {
 			attacking = true;
 			kicking = true;
 			App->audio->PlayFx(attackSound);
-			attackCollider->type = COLLIDER_ATTACK1;
 
 			if (crouching) {
-				if(App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT)
+				if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT) {
 					animation = &spin_kick;
-				else if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT)
-						animation = &crouch_l_kick;
-				else
+					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK1, App->entity);
+				}
+				else if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT) {
+					animation = &crouch_l_kick;
+					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK1, App->entity);
+				}
+				else {
 					animation = &crouch_m_kick;
+					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 52, 15 }, COLLIDER_ATTACK1, App->entity);
+				}
 			}
 			else {
-				if (0 /*asdfasdf*/)
+				if (0 /*asdfasdf*/) {
 					animation = &forward_l_kick;
-				else if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT)
+				}
+				else if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT) {
 					animation = &high_kick;
-				else
-					animation = &forward_m_kick;
+					attackCollider = App->collisions->AddCollider({ (int)position.x + 50, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK1, App->entity);
+				}
+				else {
+					animation = &forward_m_kick; 
+					attackCollider = App->collisions->AddCollider({ (int)position.x + 50, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK1, App->entity);
+				}
 			}
 
 		}
@@ -226,21 +233,21 @@ bool j1Player::Update(float dt, bool do_logic) {
 		// Punch management
 		if (crouch_m_punch.Finished() || m_h_punch.Finished()) {
 
-			attackCollider->type = COLLIDER_NONE;
-
 			crouch_m_punch.Reset();
 			m_h_punch.Reset();
 			attacking = false;
 			punching = false;
+			attackCollider->to_delete = true;
+
+			if (attackCollider != nullptr)
+				attackCollider->to_delete = true;
 		}
 		// Kick management
-		else 
-		if (crouch_m_kick.Finished() || forward_h_kick.Finished() || forward_m_kick.Finished() 
+		else
+		if (crouch_m_kick.Finished() || forward_h_kick.Finished() || forward_m_kick.Finished()
 			|| high_kick.Finished() || spin_kick.Finished() || crouch_l_kick.Finished()) {
 
-			attackCollider->type = COLLIDER_NONE;
-
-			crouch_m_kick.Reset(); 
+			crouch_m_kick.Reset();
 			crouch_l_kick.Reset();
 			forward_l_kick.Reset();
 			forward_m_kick.Reset();
@@ -248,9 +255,10 @@ bool j1Player::Update(float dt, bool do_logic) {
 			high_kick.Reset();
 			attacking = false;
 			kicking = false;
+
+			if(attackCollider != nullptr)
+				attackCollider->to_delete = true;
 		}
-		else if (attackCollider != nullptr)
-			attackCollider->SetPos((int)position.x + rightAttackSpawnPos, (int)position.y + margin.y);
 
 		hud->Update(dt);
 
@@ -325,11 +333,11 @@ bool j1Player::CleanUp() {
 
 void j1Player::UpdateCameraPosition()
 {
-	//Limit X camera position
+	// Limit X camera position
 	if (App->render->camera.x > 0)
 		App->render->camera.x = 0;
 
-	//Limit player X position
+	// Limit player X position
 	if (App->entity->player->position.x > playerLimit)
 		App->entity->player->position.x = playerLimit;
 

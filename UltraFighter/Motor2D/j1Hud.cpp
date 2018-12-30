@@ -28,9 +28,6 @@ bool j1Hud::Start()
 	seconds = App->gui->CreateLabel(&labels_list, LABEL, 540, 0, text, time_text.GetString());
 	minutes = App->gui->CreateLabel(&labels_list, LABEL, 450, 0, text, "00:");
 
-	score = { "%i", App->entity->player->points };
-	score_points = { "%i", App->entity->player->score_points };
-
 
 	if (App->scene1->active)
 		coins_label = App->gui->CreateLabel(&labels_list, LABEL, 80, 700, text, score.GetString(), { 255, 255, 255, 255 });
@@ -91,18 +88,7 @@ bool j1Hud::Update(float dt)
 	//PLAYER LIVES
 	int space = 0;
 
-	for (int i = App->entity->player->lives; i >= 0; --i)
-	{
-		SDL_Rect r = { 0,0,8,11 };
-		App->render->Blit(lives_tex, 10 + space, 3, &r, SDL_FLIP_NONE, 1.0f, 1, 0, INT_MAX, INT_MAX, false);
-		if (App->gui->debug)
-			App->render->DrawQuad({ 10 + space, 3, r.w * 4, r.h * 4}, 255, 0, 0, 255, false, false);
-
-		space += 50;
-	}
-
 	//LABELS
-	score = { "%i", App->entity->player->points };
 	if (coins_label != nullptr)
 	{
 		App->tex->UnLoad(coins_label->sprites);
@@ -114,7 +100,6 @@ bool j1Hud::Update(float dt)
 			App->render->DrawQuad({ 80, 700, 64, 64 }, 255, 0, 0, 255, false, false);
 	}
 
-	score_points = { "%i", App->entity->player->score_points };
 	if (score_label != nullptr)
 	{
 		App->tex->UnLoad(score_label->sprites);
@@ -145,18 +130,12 @@ bool j1Hud::Load(pugi::xml_node & data)
 {
 	pugi::xml_node hud = data.child("player").child("hud");
 
-	App->entity->player->score_points = hud.child("score").attribute("value").as_uint();
-	App->entity->player->points = hud.child("coins_score").attribute("value").as_uint();
-
 	return true;
 }
 
 bool j1Hud::Save(pugi::xml_node & data) const
 {
 	pugi::xml_node hud = data;
-
-	hud.append_child("coins_score").append_attribute("value") = App->entity->player->points;
-	hud.append_child("score").append_attribute("value") = App->entity->player->score_points;
 
 	return true;
 }

@@ -4,18 +4,19 @@
 #include "j1Module.h"
 #include "j1UserInterfaceElement.h"
 
-
 #define MAX_ENTITIES 1000
 
 class j1Entity;
 class j1Player;
+class j1Player2;
 class j1Hook;
 
 struct SDL_Texture;
 
 enum ENTITY_TYPES
 {
-	PLAYER,
+	PLAYER1,
+	PLAYER2,
 	UNKNOWN
 };
 
@@ -56,6 +57,7 @@ public:
 
 	p2List<j1Entity*>	entities;
 	j1Player*			player = nullptr;
+	j1Player2*			player2 = nullptr;
 
 	SDL_Texture*		player_texture = nullptr;
 	SDL_Texture*		harpy_texture = nullptr;

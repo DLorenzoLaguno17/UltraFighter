@@ -17,7 +17,7 @@
 
 #include "Brofiler/Brofiler.h"
 
-j1Player::j1Player(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TYPES::PLAYER)
+j1Player::j1Player(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TYPES::PLAYER1)
 {
 	animation = NULL;
 	
@@ -72,8 +72,6 @@ bool j1Player::Start() {
 
 	animation = &idle;
 	currentJumps = initialJumps;
-	
-	lives = 2;
 
 	// Setting player position
 	position.x = 3;
@@ -151,7 +149,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		}
 
 		// Punch control
-		if (App->input->GetKey(SDL_SCANCODE_O) == j1KeyState::KEY_DOWN
+		if (App->input->GetKey(SDL_SCANCODE_T) == j1KeyState::KEY_DOWN
 			&& attacking == false && kicking == false && jumping == false) {
 			attacking = true;
 			punching = true;
@@ -178,7 +176,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		}
 
 		// Kick control
-		if (App->input->GetKey(SDL_SCANCODE_P) == j1KeyState::KEY_DOWN 
+		if (App->input->GetKey(SDL_SCANCODE_Y) == j1KeyState::KEY_DOWN 
 			&& attacking == false && punching == false && jumping == false) {
 			attacking = true;
 			kicking = true;
@@ -304,8 +302,6 @@ bool j1Player::Load(pugi::xml_node& data) {
 	position.x = data.child("player").child("position").attribute("x").as_int();
 	position.y = data.child("player").child("position").attribute("y").as_int();
 
-	lives = data.child("player").child("lives").attribute("value").as_uint();
-
 	if (hud)
 		hud->Load(data);
 
@@ -323,7 +319,6 @@ bool j1Player::Save(pugi::xml_node& data) const {
 	pugi::xml_node godmode = data.append_child("godmode");
 
 	pugi::xml_node life = data.append_child("lives");
-	life.append_attribute("value") = lives;
 
 	if (hud)
 		hud->Save(data.append_child("hud"));
@@ -394,14 +389,7 @@ void j1Player::LoadPlayerProperties() {
 	playerSize.y = player.child("size").attribute("height").as_int();
 	margin.x = player.child("margin").attribute("x").as_int();
 	margin.y = player.child("margin").attribute("y").as_int();
-	colisionMargin = player.child("margin").attribute("colisionMargin").as_uint();
-
-	// Copying attack values
-	attackBlittingX = player.child("attack").attribute("blittingX").as_int();
-	attackBlittingY = player.child("attack").attribute("blittingY").as_int();
-	rightAttackSpawnPos = player.child("attack").attribute("rightColliderSpawnPos").as_int();
-	leftAttackSpawnPos = player.child("attack").attribute("leftColliderSpawnPos").as_int();
-
+	
 	// Copying values of the speed
 	pugi::xml_node speed = player.child("speed");
 
@@ -412,7 +400,4 @@ void j1Player::LoadPlayerProperties() {
 	fallingSpeed = speed.child("physics").attribute("falling").as_float();
 	verticalAcceleration = speed.child("physics").attribute("acceleration").as_float();
 	initialJumps = speed.child("physics").attribute("jumpNumber").as_uint();
-	maxJumps = speed.child("physics").attribute("maxJumps").as_uint();
-
-	deathByFallColliderHeight = player.child("deathByFallCollider").attribute("h").as_uint();
 }

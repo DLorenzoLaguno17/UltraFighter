@@ -52,11 +52,11 @@ bool j1SceneMenu::Start()
 		App->audio->PlayMusic("audio/music/menu_music.ogg", 1.0f);
 
 		// Loading textures
-		gui_tex = App->tex->Load("gui/atlas.png");
-		logo_tex = App->tex->Load("gui/logo.png");
+		gui_tex = App->tex->Load("gui/Ui.png");
 		player_tex = App->tex->Load("textures/character/character.png");
 		harpy_tex = App->tex->Load("textures/enemies/harpy/harpy.png");
-		
+		background = App->tex->Load("gui/MenuBackground.png");
+
 		// Loading fonts
 		font = App->font->Load("fonts/PixelCowboy/PixelCowboy.otf", 8);
 
@@ -68,29 +68,22 @@ bool j1SceneMenu::Start()
 		pugi::xml_document save_game;
 		pugi::xml_parse_result result = save_game.load_file("save_game.xml");
 
-		App->gui->CreateBox(&menuBoxes, BOX, App->gui->lastSlider1X, App->gui->slider1Y, { 416, 72, 28, 42 }, gui_tex, (j1UserInterfaceElement*)settings_window, App->gui->minimum, App->gui->maximum);
-		App->gui->CreateBox(&menuBoxes, BOX, App->gui->lastSlider2X, App->gui->slider2Y, { 416, 72, 28, 42 }, gui_tex, (j1UserInterfaceElement*)settings_window, App->gui->minimum, App->gui->maximum);
+		App->gui->CreateBox(&menuBoxes, BOX, App->gui->lastSlider1X, App->gui->slider1Y, { 0, 532, 25, 66 }, gui_tex, (j1UserInterfaceElement*)settings_window, App->gui->minimum, App->gui->maximum);
+		App->gui->CreateBox(&menuBoxes, BOX, App->gui->lastSlider2X, App->gui->slider2Y, { 0, 532, 25, 66 }, gui_tex, (j1UserInterfaceElement*)settings_window, App->gui->minimum, App->gui->maximum);
 
-		SDL_Rect idle = {0, 143, 190, 49};
-		SDL_Rect hovered = { 0, 45, 190, 49 };
-		SDL_Rect clicked = { 0, 94, 190, 49 };
-		App->gui->CreateButton(&menuButtons, BUTTON, 80, 110, idle, hovered, clicked, gui_tex, PLAY_GAME);
-		App->gui->CreateButton(&menuButtons, BUTTON, 80, 160, idle, hovered, clicked, gui_tex, OPEN_CREDITS);
+		SDL_Rect idle = {0, 0, 406, 58};
+		SDL_Rect hovered = { 0, 59, 406, 57 };
+		SDL_Rect clicked = { 0, 117, 406, 58 };
+		App->gui->CreateButton(&menuButtons, BUTTON, 170, 120, idle, hovered, clicked, gui_tex, PLAY_GAME);
 
-		SDL_Rect idle4 = { 0, 699, 190, 49 };
+		SDL_Rect idle2 = { 0, 176, 251, 58 };
+		SDL_Rect hovered2 = { 0, 235, 251, 58 };
+		SDL_Rect clicked2 = { 0, 293, 251, 58 };
+		App->gui->CreateButton(&menuButtons, BUTTON, 170, 150, idle2, hovered2, clicked2, gui_tex, CLOSE_GAME);
 
-		if (result == NULL)
-			App->gui->CreateButton(&menuButtons, BUTTON, 80, 135, idle4, idle4, idle4, gui_tex, NO_FUNCTION);
-		else
-			App->gui->CreateButton(&menuButtons, BUTTON, 80, 135, idle, hovered, clicked, gui_tex, LOAD_GAME);
+		//App->gui->CreateButton(&menuButtons, BUTTON, 64, 135, idle2, hovered2, clicked2, gui_tex, CLOSE_SETTINGS, (j1UserInterfaceElement*)settings_window);
 
-		SDL_Rect idle2 = { 28, 201, 49, 49 };
-		SDL_Rect hovered2 = { 77, 201, 49, 49 };
-		SDL_Rect clicked2 = { 126, 201, 49, 49 };
-		App->gui->CreateButton(&menuButtons, BUTTON, 228, 3, idle2, hovered2, clicked2, gui_tex, CLOSE_GAME);
-		App->gui->CreateButton(&menuButtons, BUTTON, 64, 135, idle2, hovered2, clicked2, gui_tex, CLOSE_SETTINGS, (j1UserInterfaceElement*)settings_window);
-
-		SDL_Rect idle3 = { 463, 109, 49, 49 };
+		/*SDL_Rect idle3 = { 463, 109, 49, 49 };
 		SDL_Rect hovered3 = { 463, 158, 49, 49 };
 		SDL_Rect clicked3 = { 463, 207, 49, 49 };
 		App->gui->CreateButton(&menuButtons, BUTTON, 3, 3, idle3, hovered3, clicked3, gui_tex, SETTINGS);
@@ -100,7 +93,7 @@ bool j1SceneMenu::Start()
 		App->gui->CreateLabel(&menuLabels, LABEL, 90, 140, font, "Continue", App->gui->beige);
 		App->gui->CreateLabel(&menuLabels, LABEL, 44, 9, font, "Settings", App->gui->brown, (j1UserInterfaceElement*)settings_window);
 		App->gui->CreateLabel(&menuLabels, LABEL, 30, 50, font, "Sound", App->gui->brown, (j1UserInterfaceElement*)settings_window);
-		App->gui->CreateLabel(&menuLabels, LABEL, 30, 89, font, "Music", App->gui->brown, (j1UserInterfaceElement*)settings_window);
+		App->gui->CreateLabel(&menuLabels, LABEL, 30, 89, font, "Music", App->gui->brown, (j1UserInterfaceElement*)settings_window);*/
 
 		player_created = false;
 	}
@@ -211,13 +204,14 @@ bool j1SceneMenu::Update(float dt)
 	// DRAWING EVERYTHING ON THE SCREEN
 	// ---------------------------------------------------------------------------------------------------------------------	
 
-	// Blitting background and animations
-	App->map->Draw();
+	SDL_Rect rect = { 0,0,1024,768 };
+	App->render->Blit(background, 0, 0, &rect, SDL_FLIP_NONE, 1.0f, 0.333333333333);
 
-	SDL_Rect p = player.GetCurrentFrame(dt);
-	App->render->Blit(player_tex, 40, 105, &p, SDL_FLIP_NONE);
-	SDL_Rect h = harpy.GetCurrentFrame(dt);
-	App->render->Blit(harpy_tex, 205, 35, &h, SDL_FLIP_HORIZONTAL);
+	SDL_Rect rect2 = { 0,352,507,58 };
+	App->render->Blit(gui_tex, 170, 180, &rect2, SDL_FLIP_NONE, 1.0f, App->gui->buttonsScale);
+
+	SDL_Rect rect3 = { 0,842,420,11 };
+	App->render->Blit(gui_tex, 170, 210, &rect3, SDL_FLIP_NONE, 1.0f, App->gui->buttonsScale);
 
 	// Blitting the buttons and labels of the menu
 	for (p2List_item<j1Button*>* item = menuButtons.start; item != nullptr; item = item->next) {
@@ -228,21 +222,7 @@ bool j1SceneMenu::Update(float dt)
 		if (item->data->parent != nullptr) continue;
 		if (item->data->visible) item->data->Draw();
 	}
-
-	// Blitting the logo
-	SDL_Rect logo = { 166, 139, 711, 533 };
-	App->render->Blit(logo_tex, 54, 0, &logo, SDL_FLIP_NONE, 1.0f, App->gui->logoScale);
 	
-	//Blitting the debug
-	if (App->gui->debug) {
-		App->render->DrawQuad({ Uint8(3 / 0.25), Uint8(3 / 0.25), 
-			Uint8(49 / App->gui->buttonsScale), Uint8(49 / App->gui->buttonsScale) }, 255, 0, 0, 255, false, false);
-		App->render->DrawQuad({ Uint8(228 / 0.25) * 6 + 47, Uint8(3 / 0.25),
-			Uint8(49 / App->gui->buttonsScale), Uint8(49 / App->gui->buttonsScale) }, 255, 0, 0, 255, false, false);
-		App->render->DrawQuad({ 320, 440, 380, Uint8(49 / App->gui->buttonsScale) }, 255, 0, 0, 255, false, false);
-		App->render->DrawQuad({ 320, 540, 380, Uint8(49 / App->gui->buttonsScale) }, 255, 0, 0, 255, false, false);
-		App->render->DrawQuad({ 320, 640, 380, Uint8(49 / App->gui->buttonsScale) }, 255, 0, 0, 255, false, false);
-	}
 
 	// Blitting settings window
 	if (settings_window != nullptr && settings_window->visible == true)
@@ -258,18 +238,7 @@ bool j1SceneMenu::Update(float dt)
 			item->data->Draw(App->gui->buttonsScale);
 		
 	}
-	for (p2List_item<j1Label*>* item = menuLabels.start; item != nullptr; item = item->next) {
-		if (item->data->parent == nullptr) continue;
 
-		if (item->data->parent->visible == false)
-			item->data->visible = false;
-		else {
-			if(item->data->text == "Settings")
-				item->data->Draw();
-			else
-				item->data->Draw(App->gui->buttonsScale);
-		}
-	}
 	for (p2List_item<j1Box*>* item = menuBoxes.start; item != nullptr; item = item->next) {
 		if (item->data->parent == nullptr) continue;
 
@@ -295,7 +264,6 @@ bool j1SceneMenu::PostUpdate()
 bool j1SceneMenu::CleanUp()
 {
 	LOG("Freeing all textures");
-	App->tex->UnLoad(logo_tex);
 	App->tex->UnLoad(harpy_tex);
 	App->tex->UnLoad(player_tex);
 	App->tex->UnLoad(gui_tex);

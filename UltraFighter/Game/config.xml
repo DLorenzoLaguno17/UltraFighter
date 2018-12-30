@@ -42,7 +42,7 @@
   </map>  
   
   <gui>
-	<scale buttonsScale="0.5f" boxScale="0.23f" logoScale="0.2f"/>
+	<scale buttonsScale="0.3f" boxScale="0.23f" logoScale="0.2f"/>
 	<positions settingsPositionX="54" settingsPositionY="10"/>
 	<sliderLimits maximum="108" minimum="58"/>
 	<colors a="255">

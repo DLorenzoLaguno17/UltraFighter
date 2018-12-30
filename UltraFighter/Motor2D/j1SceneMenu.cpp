@@ -46,7 +46,7 @@ bool j1SceneMenu::Start()
 	if (active)
 	{
 		// The map is loaded
-		App->map->Load("menu.tmx");
+		//App->map->Draw();
 
 		// The audio is played
 		App->audio->PlayMusic("audio/music/menu_music.ogg", 1.0f);

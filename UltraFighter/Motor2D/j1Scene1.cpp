@@ -56,7 +56,7 @@ bool j1Scene1::Start()
 	if (active)
 	{
 		// The map is loaded
-		App->map->Load("lvl1.tmx");
+		App->map->Draw();
 
 		// The audio is played	
 		App->audio->PlayMusic("audio/Streetfighter2/Sound/in_game_music.ogg", 1.0f);

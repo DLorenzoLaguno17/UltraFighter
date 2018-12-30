@@ -79,7 +79,7 @@ bool j1Player::Start() {
 	position.x = initialPosition.x;
 	position.y = initialPosition.y;
 
-	collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y, 35, 85 }, COLLIDER_PLAYER, App->entity);
+	collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y, 35, 85 }, COLLIDER_PLAYER1, App->entity);
 	
 	attackCollider = App->collisions->AddCollider({ (int)position.x + rightAttackSpawnPos, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_NONE, App->entity);
 
@@ -158,7 +158,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 			attacking = true;
 			punching = true;
 			App->audio->PlayFx(attackSound);
-			attackCollider->type = COLLIDER_ATTACK;
+			attackCollider->type = COLLIDER_ATTACK1;
 
 			if (crouching) 
 				animation = &crouch_m_punch;
@@ -172,7 +172,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 			attacking = true;
 			kicking = true;
 			App->audio->PlayFx(attackSound);
-			attackCollider->type = COLLIDER_ATTACK;
+			attackCollider->type = COLLIDER_ATTACK1;
 
 			if (crouching) {
 				if(App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT)
@@ -341,7 +341,7 @@ void j1Player::UpdateCameraPosition()
 // Detects collisions
 void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 {
-	if (col_1->type == COLLIDER_PLAYER || col_1->type == COLLIDER_NONE)
+	if (col_1->type == COLLIDER_PLAYER1)
 	{		
 		// If the player collides with a wall
 		if (col_2->type == COLLIDER_WALL) {

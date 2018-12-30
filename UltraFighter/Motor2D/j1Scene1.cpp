@@ -59,7 +59,7 @@ bool j1Scene1::Start()
 		App->map->Load("lvl1.tmx");
 
 		// The audio is played	
-		App->audio->PlayMusic("audio/music/level1_music.ogg", 1.0f);
+		App->audio->PlayMusic("audio/Streetfighter2/Sound/in_game_music.ogg", 1.0f);
 
 		// Textures are loaded
 		debug_tex = App->tex->Load("maps/path2.png");

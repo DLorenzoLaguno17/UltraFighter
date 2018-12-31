@@ -49,7 +49,8 @@ public:
 	Animation jump;
 	Animation jump_forward;
 	Animation crouch;
-	Animation blocking;
+	Animation block;
+	Animation block_crouch;
 	Animation short_punch;
 	Animation m_h_punch;
 	Animation forward_m_punch;
@@ -83,6 +84,8 @@ public:
 	iPoint playerSize;
 	iPoint margin;
 
+	uint currentTime, lastTime = 0;
+
 	uint currentJumps;
 	uint initialJumps;
 
@@ -104,6 +107,7 @@ public:
 	bool playerIdle = false;
 	bool jumping = false;
 	bool crouching = false;
+	bool blocking = false;
 
 	bool player_start = false;
 	bool dead = false;

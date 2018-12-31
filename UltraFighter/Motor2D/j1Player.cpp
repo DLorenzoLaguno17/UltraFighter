@@ -27,7 +27,8 @@ j1Player::j1Player(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TYPE
 	jump.LoadAnimations("jump");
 	jump_forward.LoadAnimations("jump_forward");
 	crouch.LoadAnimations("crouch");
-	blocking.LoadAnimations("blocking");
+	block_idle.LoadAnimations("blocking_idle");
+	block_crouch.LoadAnimations("blocking_crouch");
 	short_punch.LoadAnimations("l_punch");
 	m_h_punch.LoadAnimations("m_h_punch");
 	forward_m_punch.LoadAnimations("forward_m_punch");
@@ -99,119 +100,145 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 	BROFILER_CATEGORY("PlayerUpdate", Profiler::Color::LightSeaGreen)
 
-	if (player_start && receivedDmg == false)
+	if (player_start)
 	{
 		// ---------------------------------------------------------------------------------------------------------------------
 		// CONTROL OF THE PLAYER
 		// ---------------------------------------------------------------------------------------------------------------------
-							
-		// Idle
-		if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_IDLE
-			&& App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_IDLE
-			&& App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_IDLE
-			&& attacking == false)
-			animation = &idle;
+				
+		if (!receivedDmg) {
+			// Idle
+			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_IDLE
+				&& App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_IDLE
+				&& App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_IDLE
+				&& attacking == false)
+				animation = &idle;
 
-		// Direction controls	
-		if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false ) {
-			position.x += horizontalSpeed * dt;
-			animation = &move_forward;					
+			// Direction controls	
+			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false && blocking == false) {
+				position.x += horizontalSpeed * dt;
+				animation = &move_forward;
+			}
+
+			if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false && blocking == false) {
+				position.x -= horizontalSpeed * dt;
+				animation = &move_backwards;
+			}
+
+			// Jump controls
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN && jumping == false) {
+				jumping = true;
+				verticalSpeed = initialVerticalSpeed;
+				currentJumps++;
+			}
+
+			if (jumping) {
+				position.y += verticalSpeed * dt;
+				verticalSpeed += verticalAcceleration * dt;
+
+				// While the player is falling
+				if (!attacking) animation = &jump;
+			}
+
+			// Crouch management
+			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT && attacking == false && jumping == false) {
+				animation = &crouch;
+				crouching = true;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_UP || App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_IDLE) {
+				crouch.Reset();
+				crouching = false;
+			}
+
+			// Punch control
+			if (App->input->GetKey(SDL_SCANCODE_T) == j1KeyState::KEY_DOWN
+				&& attacking == false && kicking == false && jumping == false) {
+				attacking = true;
+				punching = true;
+				App->audio->PlayFx(attackSound);
+
+				if (crouching) {
+					animation = &crouch_m_punch;
+					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 40, 26, 15 }, COLLIDER_ATTACK1, App->entity);
+				}
+				else {
+					if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT) {
+						animation = &m_h_punch;
+						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 17, 35, 15 }, COLLIDER_ATTACK1, App->entity);
+					}
+					else if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT) {
+						animation = &forward_h_punch;
+						attackCollider = App->collisions->AddCollider({ (int)position.x + 45, (int)position.y - 10, 15, 35 }, COLLIDER_ATTACK1, App->entity);
+					}
+					else {
+						animation = &short_punch;
+						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 17, 25, 15 }, COLLIDER_ATTACK1, App->entity);
+					}
+				}
+			}
+
+			// Kick control
+			if (App->input->GetKey(SDL_SCANCODE_Y) == j1KeyState::KEY_DOWN
+				&& attacking == false && punching == false && jumping == false) {
+				attacking = true;
+				kicking = true;
+				App->audio->PlayFx(attackSound);
+
+				if (crouching) {
+					if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT) {
+						animation = &crouch_m_kick;
+						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 52, 15 }, COLLIDER_ATTACK1, App->entity);
+					}
+					else if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT) {
+						animation = &spin_kick;
+						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK1, App->entity);
+					}
+					else {
+						animation = &crouch_l_kick;
+						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK1, App->entity);
+					}
+				}
+				else {
+					if (0 /*asdfasdf*/) {
+						animation = &forward_l_kick;
+					}
+					else if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT) {
+						animation = &high_kick;
+						attackCollider = App->collisions->AddCollider({ (int)position.x + 50, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK1, App->entity);
+					}
+					else {
+						animation = &forward_m_kick;
+						attackCollider = App->collisions->AddCollider({ (int)position.x + 50, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK1, App->entity);
+					}
+				}
+
+			}
 		}
-
-		if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false) {
+		// Damage management
+		else if (receive_damage_idle.Finished() || receive_damage_crouch.Finished()) {
+			receivedDmg = false;
+			receive_damage_idle.Reset();
+			receive_damage_crouch.Reset();
+		}
+		else {
 			position.x -= horizontalSpeed * dt;
-			animation = &move_backwards;
+
+			if (crouching) animation = &receive_damage_crouch;
+			else animation = &receive_damage_idle;
 		}
 
-		// Jump controls
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == j1KeyState::KEY_DOWN && jumping == false) {
-			jumping = true;
-			verticalSpeed = initialVerticalSpeed;
-			currentJumps++;
+		// Block management
+		currentTime = SDL_GetTicks();
+
+		if (currentTime > lastTime + 500 && blocking) {
+			lastTime = currentTime;
+			blocking = false;
+		}
+		else if (blocking) {
+			if (crouching) animation = &block_crouch;
+			else animation = &block_idle;
 		}
 
-		if (jumping) {
-			position.y += verticalSpeed * dt;
-			verticalSpeed += verticalAcceleration * dt;
-
-			// While the player is falling
-			if (!attacking) animation = &jump;
-		}		
-
-		// Crouch management
-		if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT && attacking == false && jumping == false) {
-			animation = &crouch;
-			crouching = true;
-		}
-		if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_UP) {
-			crouch.Reset();
-			crouching = false;
-		}
-
-		// Punch control
-		if (App->input->GetKey(SDL_SCANCODE_T) == j1KeyState::KEY_DOWN
-			&& attacking == false && kicking == false && jumping == false) {
-			attacking = true;
-			punching = true;
-			App->audio->PlayFx(attackSound);
-
-			if (crouching) {
-				animation = &crouch_m_punch;
-				attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 40, 26, 15 }, COLLIDER_ATTACK1, App->entity);
-			}
-			else {
-				if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT) {
-					animation = &m_h_punch;
-					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 17, 35, 15 }, COLLIDER_ATTACK1, App->entity);
-				}
-				else if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT) {
-					animation = &forward_h_punch;
-					attackCollider = App->collisions->AddCollider({ (int)position.x + 45, (int)position.y - 10, 15, 35 }, COLLIDER_ATTACK1, App->entity);
-				}
-				else {
-					animation = &short_punch;
-					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 17, 25, 15 }, COLLIDER_ATTACK1, App->entity);
-				}
-			}
-		}
-
-		// Kick control
-		if (App->input->GetKey(SDL_SCANCODE_Y) == j1KeyState::KEY_DOWN 
-			&& attacking == false && punching == false && jumping == false) {
-			attacking = true;
-			kicking = true;
-			App->audio->PlayFx(attackSound);
-
-			if (crouching) {
-				if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT) {
-					animation = &crouch_m_kick;
-					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 52, 15 }, COLLIDER_ATTACK1, App->entity);
-				}
-				else if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT) {
-					animation = &spin_kick;
-					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK1, App->entity);
-				}
-				else {
-					animation = &crouch_l_kick;
-					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK1, App->entity);
-				}
-			}
-			else {
-				if (0 /*asdfasdf*/) {
-					animation = &forward_l_kick;
-				}
-				else if (App->input->GetKey(SDL_SCANCODE_W) == j1KeyState::KEY_REPEAT) {
-					animation = &high_kick;
-					attackCollider = App->collisions->AddCollider({ (int)position.x + 50, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK1, App->entity);
-				}
-				else {
-					animation = &forward_m_kick; 
-					attackCollider = App->collisions->AddCollider({ (int)position.x + 50, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK1, App->entity);
-				}
-			}
-
-		}
-		
 		// Update collider position to player position
 		if (collider != nullptr)
 			collider->SetPos(position.x + margin.x, position.y + margin.y);
@@ -223,28 +250,34 @@ bool j1Player::Update(float dt, bool do_logic) {
 		// Blitting the player
 		SDL_Rect r = animation->GetCurrentFrame(dt);
 
-		if (!attacking) 
-			Draw(r);
-		else if (animation == &m_h_punch)
-			Draw(r, false, 0, -12);
-		else if (animation == &short_punch)
-			Draw(r, false, 0, -12);
-		else if (animation == &forward_h_punch)
-			Draw(r, false, 0, -12);
-		else if (animation == &crouch_m_punch)
-			Draw(r, false, 0, -21);
-		else if (animation == &forward_m_kick)
-			Draw(r, false, 0, -18);
-		else if (animation == &forward_l_kick)
-			Draw(r, false, 0, -18);
-		else if (animation == &crouch_m_kick)
-			Draw(r, false, 0, -21);
-		else if (animation == &crouch_l_kick)
-			Draw(r, false, 0, -21);
-		else if (animation == &spin_kick)
-			Draw(r, false, 0, -21);
-		else if (animation == &high_kick)
-			Draw(r, false, 0, -21);
+		if (!attacking) {
+			if(animation == &receive_damage_crouch)
+				Draw(r, false, 0, 35);
+			else
+				Draw(r);
+		}
+		else{		
+			if (animation == &m_h_punch)
+				Draw(r, false, 0, -12);
+			else if (animation == &short_punch)
+				Draw(r, false, 0, -12);
+			else if (animation == &forward_h_punch)
+				Draw(r, false, 0, -12);
+			else if (animation == &crouch_m_punch)
+				Draw(r, false, 0, -21);
+			else if (animation == &forward_m_kick)
+				Draw(r, false, 0, -18);
+			else if (animation == &forward_l_kick)
+				Draw(r, false, 0, -18);
+			else if (animation == &crouch_m_kick)
+				Draw(r, false, 0, -21);
+			else if (animation == &crouch_l_kick)
+				Draw(r, false, 0, -21);
+			else if (animation == &spin_kick)
+				Draw(r, false, 0, -21);
+			else if (animation == &high_kick)
+				Draw(r, false, 0, -21);
+		}
 
 		// Punch management
 		if (crouch_m_punch.Finished() || m_h_punch.Finished() || short_punch.Finished()
@@ -369,9 +402,23 @@ void j1Player::UpdateCameraPosition()
 // Detects collisions
 void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 {
-	if (col_1->type == COLLIDER_PLAYER1)
+	if (col_1->type == COLLIDER_PLAYER1 || col_1->type == COLLIDER_ATTACK1)
 	{		
-						
+		if (col_2->type == COLLIDER_ATTACK2) {
+			if (App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_REPEAT) {
+
+				if (crouching) animation = &block_crouch;
+				else animation = &block_idle;
+				blocking = true;
+			}
+			else if (!blocking && !receivedDmg){
+				receivedDmg = true;
+				attacking = false;
+
+				if (crouching) animation = &receive_damage_crouch;
+				else animation = &receive_damage_idle;
+			}
+		}
 	}
 };
 

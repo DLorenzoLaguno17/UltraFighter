@@ -208,7 +208,10 @@ bool j1Scene1::Update(float dt)
 	}
 	
 	if (backToMenu && App->fade->IsFading() == 0)
+	{
+		App->SaveGame("save_game.xml");
 		ChangeSceneMenu();
+	}
 
 	// ---------------------------------------------------------------------------------------------------------------------
 	// DRAWING EVERYTHING ON THE SCREEN

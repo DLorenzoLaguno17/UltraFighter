@@ -126,6 +126,7 @@ bool j1Input::PreUpdate()
 		switch(event.type)
 		{
 			case SDL_QUIT:
+				App->SaveGame("save_game.xml");
 				windowEvents[WE_QUIT] = true;
 			break;
 

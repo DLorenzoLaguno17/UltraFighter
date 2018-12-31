@@ -12,14 +12,13 @@
 	<entityManager>
 		<player>
 			<jumps jumps="0" />
-			<blocks blocks="3" />
+			<blocks blocks="0" />
 			<damage_taken damage_taken="0" />
 		</player>
 		<player2>
-			<position x="160.560089" y="160" />
-			<godmode />
-			<lives />
-			<hud />
+			<jumps jumps="0" />
+			<blocks blocks="0" />
+			<damage_taken damage_taken="0" />
 		</player2>
 	</entityManager>
 	<collisions />

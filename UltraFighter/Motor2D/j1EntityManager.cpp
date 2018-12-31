@@ -89,8 +89,6 @@ bool j1EntityManager::CleanUp()
 
 	entities.clear();
 
-	player = nullptr;
-
 	return true;
 }
 

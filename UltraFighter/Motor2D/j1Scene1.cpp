@@ -256,11 +256,15 @@ bool j1Scene1::Save(pugi::xml_node& node) const
 	activated.append_attribute("true") = active;
 
 	pugi::xml_node g = node.append_child("TimeLeft");
-	if (App->entity->player->hud->timeleft >= 120)
-		g.append_attribute("bool") = true;
-	else 
-		g.append_attribute("bool") = false;
+	if (App->entity->player != nullptr)
+	{
+		if (App->entity->player->hud->timeleft >= 120)
+			g.append_attribute("bool") = true;
+		else
+			g.append_attribute("bool") = false;
 
+	}
+	
 	
 	return true;
 }

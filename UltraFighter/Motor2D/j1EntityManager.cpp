@@ -157,7 +157,11 @@ bool j1EntityManager::Load(pugi::xml_node& data)
 
 bool j1EntityManager::Save(pugi::xml_node& data) const
 {
-	player->Save(data.append_child("player"));
-	player2->Save(data.append_child("player2"));
+	if (App->entity->player != nullptr)
+	{
+		player->Save(data.append_child("player"));
+		player2->Save(data.append_child("player2"));
+	}
+
 	return true;
 }

@@ -36,6 +36,6 @@ Those controls are the basics, even though there are special combinations by usi
 
 ## Authors
 
-This game has been created by “scar Faura, Daniel Lorenzo, Jacobo Galofre, Ferr‡n BarnÈs & Vladislav Bulantsev.
+This game has been created by √íscar Faura, Daniel Lorenzo, Jacobo Galofre, Ferr√†n Barn√©s & Vladislav Bulantsev.
 Licensed under the [MIT License](LICENSE).
 

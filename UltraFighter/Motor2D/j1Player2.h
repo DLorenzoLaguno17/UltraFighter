@@ -69,6 +69,9 @@ public:
 	Animation spin_kick;
 	Animation receive_damage_idle;
 	Animation receive_damage_crouch;
+	Animation death;
+	Animation win;
+	Animation time_out;
 
 	// Sounds
 	uint deathSound;

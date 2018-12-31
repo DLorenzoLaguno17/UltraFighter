@@ -100,6 +100,9 @@ public:
 
 	bool				gamePaused = false;
 
+	bool				c_win = false;
+	bool				r_win = false;
+
 private:
 
 	p2List<j1Module*>	modules;

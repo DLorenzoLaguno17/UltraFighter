@@ -48,6 +48,9 @@ j1Player::j1Player(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TYPE
 	spin_kick.LoadAnimations("crouch_h_kick");
 	receive_damage_idle.LoadAnimations("damage_idle");
 	receive_damage_crouch.LoadAnimations("damage_crouch");
+	death.LoadAnimations("ko");
+	win.LoadAnimations("victory");
+	time_out.LoadAnimations("time_over");
 }
 
 j1Player::~j1Player() {}
@@ -108,7 +111,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		// CONTROL OF THE PLAYER
 		// ---------------------------------------------------------------------------------------------------------------------
 				
-		if (!receivedDmg && !dead) {
+		if (!receivedDmg && !dead && !App->r_win) {
 			// Idle
 			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_IDLE
 				&& App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_IDLE
@@ -218,16 +221,24 @@ bool j1Player::Update(float dt, bool do_logic) {
 			}
 		}
 		// Damage management
-		else if (receive_damage_idle.Finished() || receive_damage_crouch.Finished()) {
-			receivedDmg = false;
-			receive_damage_idle.Reset();
-			receive_damage_crouch.Reset();
+		else if (App->r_win) {
+			animation = &win;
 		}
-		else {
-			position.x -= horizontalSpeed * dt;
-			App->audio->PlayFx(attackSound);
-			if (crouching) animation = &receive_damage_crouch;
-			else animation = &receive_damage_idle;
+		else if (receivedDmg) {
+
+			if (receive_damage_idle.Finished() || receive_damage_crouch.Finished()) {
+				receivedDmg = false;
+				receive_damage_idle.Reset();
+				receive_damage_crouch.Reset();
+
+				if(dead) animation = &death;
+			}
+			else {
+				position.x -= horizontalSpeed * dt;
+				App->audio->PlayFx(attackSound);
+				if (crouching) animation = &receive_damage_crouch;
+				else animation = &receive_damage_idle;
+			}
 		}
 
 		// Block management
@@ -256,6 +267,8 @@ bool j1Player::Update(float dt, bool do_logic) {
 		if (!attacking) {
 			if(animation == &receive_damage_crouch)
 				Draw(r, false, 0, 35);
+			else if (animation == &death)
+				Draw(r, false, 0, 60);
 			else
 				Draw(r);
 		}
@@ -438,6 +451,7 @@ void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 
 				if (life == 0) {
 					dead = true;
+					App->c_win = true;
 				}
 				else {
 					if (crouching) animation = &receive_damage_crouch;

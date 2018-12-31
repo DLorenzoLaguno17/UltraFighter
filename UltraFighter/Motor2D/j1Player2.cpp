@@ -48,6 +48,9 @@ j1Player2::j1Player2(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TY
 	spin_kick.LoadAnimations2("crouch_h_kick");
 	receive_damage_idle.LoadAnimations2("damage_idle");
 	receive_damage_crouch.LoadAnimations2("damage_crouch");
+	death.LoadAnimations2("ko");
+	win.LoadAnimations2("victory");
+	time_out.LoadAnimations2("time_over");
 }
 
 j1Player2::~j1Player2() {}
@@ -106,7 +109,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		// ---------------------------------------------------------------------------------------------------------------------
 		// CONTROL OF THE PLAYER
 		// ---------------------------------------------------------------------------------------------------------------------
-		if (!receivedDmg && !dead)
+		if (!receivedDmg && !dead && !App->c_win)
 		{
 			// Idle
 			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_IDLE
@@ -116,12 +119,12 @@ bool j1Player2::Update(float dt, bool do_logic) {
 				animation = &idle;
 
 			// Direction controls	
-			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false) {
+			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false && blocking == false) {
 				position.x += horizontalSpeed * dt;
 				animation = &move_forward;
 			}
 
-			if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false) {
+			if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false && blocking == false) {
 				position.x -= horizontalSpeed * dt;
 				animation = &move_backwards;
 			}
@@ -214,17 +217,25 @@ bool j1Player2::Update(float dt, bool do_logic) {
 			}
 		}
 		// Damage management
-	else if (receive_damage_idle.Finished() || receive_damage_crouch.Finished()) {
-	receivedDmg = false;
-	receive_damage_idle.Reset();
-	receive_damage_crouch.Reset();
-	}
-	else {
-	position.x += horizontalSpeed * dt;
+		else if (App->c_win) {
+			animation = &win;
+		}
+		else if (receivedDmg) {
 
-	if (crouching) animation = &receive_damage_crouch;
-	else animation = &receive_damage_idle;
-	}
+			if (receive_damage_idle.Finished() || receive_damage_crouch.Finished()) {
+				receivedDmg = false;
+				receive_damage_idle.Reset();
+				receive_damage_crouch.Reset();
+
+				if (dead) animation = &death;
+			}
+			else {
+				position.x += horizontalSpeed * dt;
+				App->audio->PlayFx(attackSound);
+				if (crouching) animation = &receive_damage_crouch;
+				else animation = &receive_damage_idle;
+			}
+		}
 
 	// Block management
 	currentTime = SDL_GetTicks();
@@ -250,8 +261,16 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		SDL_Rect r = animation->GetCurrentFrame(dt);
 
 		if (!attacking) {
-			if(crouching)
-				Draw(r, true, 0, 22);
+			if (crouching) {
+				if (animation == &block_crouch)
+					Draw(r, true, 0, 30);
+				else
+					Draw(r, true, 0, 22);
+			}
+			else if (animation == &death)
+				Draw(r, true, 0, 60);
+			else if (animation == &block)
+				Draw(r, true, 0, 14);
 			else
 				Draw(r, true, 0, 12);
 		}
@@ -383,8 +402,8 @@ bool j1Player2::CleanUp() {
 
 void j1Player2::UpdateCameraPosition()
 {
-	if (position.y > 160) {
-		position.y = 160;
+	if (position.y > 125) {
+		position.y = 125;
 		jump.Reset();
 		jumping = false;
 		verticalSpeed = initialVerticalSpeed;
@@ -405,8 +424,7 @@ void j1Player2::OnCollision(Collider* col_1, Collider* col_2)
 {
 	if (col_1->type == COLLIDER_PLAYER2 || col_1->type == COLLIDER_ATTACK2)
 	{
-		if (col_2->type == COLLIDER_ATTACK1)
-		{
+		if (col_2->type == COLLIDER_ATTACK1) {
 			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_REPEAT) {
 
 				if (crouching)
@@ -434,12 +452,14 @@ void j1Player2::OnCollision(Collider* col_1, Collider* col_2)
 				receivedDmg = true;
 				attacking = false;
 
+				C_PointsToSubstract += 60;
 				life -= 60;
 
 				if (life < 0) life = 0;
 
 				if (life == 0) {
 					dead = true;
+					App->c_win = true;
 				}
 				else {
 					if (crouching) animation = &receive_damage_crouch;
@@ -450,7 +470,6 @@ void j1Player2::OnCollision(Collider* col_1, Collider* col_2)
 			}
 		}
 	}
-
 };
 
 void j1Player2::LoadPlayerProperties() {

@@ -17,7 +17,7 @@
 		</player>
 		<player2>
 			<jumps jumps="0" />
-			<blocks blocks="0" />
+			<blocks blocks="1" />
 			<damage_taken damage_taken="0" />
 		</player2>
 	</entityManager>

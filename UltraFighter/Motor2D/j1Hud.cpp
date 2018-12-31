@@ -19,7 +19,7 @@ j1Hud::~j1Hud() {}
 
 bool j1Hud::Start()
 {
-	text = App->font->Load("fonts/PixelCowboy/PixelCowboy.otf", 8);
+	text = App->font->Load("fonts/PixelCowboy/PixelCowboy.ttf", 8);
 	Ryu = App->tex->Load("gui/Ui.png");
 	Chunli = App->tex->Load("gui/Ui.png");
 	vs = App->tex->Load("gui/Ui.png");
@@ -27,8 +27,8 @@ bool j1Hud::Start()
 	Ryulifebad = App->tex->Load("gui/Ui.png");
 	Chunlilifegood = App->tex->Load("gui/Ui.png");
 	Chunlilifebad = App->tex->Load("gui/Ui.png");
-	seconds = App->gui->CreateLabel(&labels_list, LABEL, 530, 70, text, time_text.GetString());
-	minutes = App->gui->CreateLabel(&labels_list, LABEL, 400, 70, text, "00:");
+	seconds = App->gui->CreateLabel(&labels_list, LABEL, 530, 80, text, time_text.GetString());
+	minutes = App->gui->CreateLabel(&labels_list, LABEL, 400, 80, text, "00 ");
 	C_lifepoints = 420;
 	R_lifepoints = 420;
 	R_PointsToSubstract = 0;
@@ -82,9 +82,9 @@ bool j1Hud::Update(float dt)
 	seconds->sprites = App->font->Print(time_text.GetString(), seconds->color, seconds->font);
 
 	if (seconds->sprites != nullptr)
-		seconds->Draw(2.0f, 0, 0, false);
+		seconds->Draw(1.5f, 0, 0, false);
 	if (minutes->sprites != nullptr)
-		minutes->Draw(2.0f, 0, 0, false);
+		minutes->Draw(1.5f, 0, 0, false);
 	if (App->gui->debug)
 		App->render->DrawQuad({ 450, 0, 160, 64 }, 255, 0, 0, 255, false, false);
 
@@ -97,7 +97,7 @@ bool j1Hud::Update(float dt)
 	SDL_Rect lifechunli = { 465, 843 ,C_lifepoints,11 };
 	App->render->Blit(Ryu, 20, 20, &r , SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(Chunli, 540, 20, &c, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
-	App->render->Blit(vs, 470, 40, &v , SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(vs, 470, 30, &v , SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(Ryulifegood, 20, 5, &lifebad, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(Ryulifebad, 20, 5, &lifechunli, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(Chunlilifegood, 555, 5, &lifebad, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);

@@ -50,7 +50,7 @@ public:
 	j1Label* seconds;
 
 	_TTF_Font* text = nullptr;
-	uint currentTime, lastTime = 0;
+	uint currentTime = 0, lastTime = 0;
 	
 	int time;
 

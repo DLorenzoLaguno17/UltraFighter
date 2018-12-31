@@ -76,7 +76,7 @@ bool j1Player::Start() {
 
 	LoadPlayerProperties();
 
-	animation = &idle;
+	//animation = &idle;
 	currentJumps = initialJumps;
 
 	// Setting player position

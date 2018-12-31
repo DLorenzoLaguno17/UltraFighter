@@ -7,9 +7,26 @@
 	<:anonymous />
 	<menu />
 	<scene1>
-		<Time out />
+		<Time out bool="false" />
 	</scene1>
-	<entityManager />
+	<entityManager>
+		<player>
+			<jumps jumps="0" />
+			<blocks blocks="0" />
+			<damage_received damage_received="0" />
+			<kicks kicks="0" />
+			<punches punches="0" />
+			<Wins wins="0" />
+		</player>
+		<player2>
+			<jumps jumps="0" />
+			<blocks blocks="0" />
+			<damage_received damage_received="0" />
+			<kicks kicks="0" />
+			<punches punches="0" />
+			<Wins wins="0" />
+		</player2>
+	</entityManager>
 	<collisions />
 	<fonts />
 	<gui />

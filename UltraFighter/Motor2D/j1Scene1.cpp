@@ -121,6 +121,9 @@ bool j1Scene1::Start()
 
 		SDL_Rect rect3 = { 0,842,420,11 };
 		App->gui->CreateButton(&scene1Buttons, BUTTON, 8, 115, rect3, rect3, rect3, gui_tex, NO_FUNCTION, (j1UserInterfaceElement*)settings_window);
+		
+
+
 		startup_time.Start();
 	}
 

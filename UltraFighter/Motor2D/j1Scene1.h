@@ -78,7 +78,6 @@ public:
 	Animation couple_left;
 	Animation guys;
 	Animation couple_right;
-
 };
 
 #endif // __j1SCENE1_H__

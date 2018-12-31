@@ -30,8 +30,8 @@ bool j1Hud::Start()
 	Chunlilifebad = App->tex->Load("gui/Ui.png");
 	seconds = App->gui->CreateLabel(&labels_list, LABEL, 530, 80, text, time_text.GetString());
 	minutes = App->gui->CreateLabel(&labels_list, LABEL, 400, 80, text, "00 ");
-	C_lifepoints = 420;
 	R_lifepoints = 420;
+	C_startlifepoints = 465;
 
 	animation = &idle;
 
@@ -74,8 +74,8 @@ bool j1Hud::Update(float dt)
 		App->entity->player->R_PointsToSubstract--;
 	}
 	if (App->entity->player2->C_PointsToSubstract > 0) {
-		if(C_lifepoints > 0) 
-			C_lifepoints--;
+		if(C_startlifepoints > 0) 
+			C_startlifepoints--;
 		App->entity->player2->C_PointsToSubstract--;
 	}
 
@@ -95,7 +95,7 @@ bool j1Hud::Update(float dt)
 	SDL_Rect v = { 0, 1105 ,70,44 };
 	SDL_Rect liferyu = { 465, 843, R_lifepoints,11 };
 	SDL_Rect lifebad = { 0, 842 ,420,11 };
-	SDL_Rect lifechunli = { 465, 843, C_lifepoints,11 };
+	SDL_Rect lifechunli = { C_startlifepoints, 843, 420,11 };
 	App->render->Blit(Ryu, 20, 20, &r , SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(Chunli, 540, 20, &c, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(vs, 470, 30, &v , SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);

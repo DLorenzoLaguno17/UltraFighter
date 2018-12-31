@@ -43,8 +43,7 @@ public:
 	p2SString score_points;
 
 	uint R_lifepoints;
-	uint C_lifepoints;
-
+	uint C_startlifepoints;
 
 	j1Label* seconds;
 	j1Label* minutes;

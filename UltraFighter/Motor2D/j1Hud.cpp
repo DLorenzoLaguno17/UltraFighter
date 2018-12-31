@@ -53,7 +53,7 @@ bool j1Hud::Update(float dt)
 	if (App->c_win || App->r_win || timeleft >= 120) App->timeOut = true;
 
 	if (App->timeOut && !App->takenTime) {
-		lastTime = SDL_GetTicks();
+		lastTime = currentTime;
 		App->takenTime = true;
 	}
 

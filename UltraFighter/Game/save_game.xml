@@ -7,18 +7,18 @@
 	<:anonymous />
 	<menu />
 	<scene1>
-		<activated true="true" />
+		<activated true="false" />
 	</scene1>
 	<entityManager>
 		<player>
-			<jumps jumps="0" />
-			<blocks blocks="0" />
-			<damage_taken damage_taken="0" />
+			<jumps jumps="9" />
+			<blocks blocks="3" />
+			<damage_taken damage_taken="2" />
 		</player>
 		<player2>
 			<jumps jumps="0" />
 			<blocks blocks="0" />
-			<damage_taken damage_taken="0" />
+			<damage_taken damage_taken="6" />
 		</player2>
 	</entityManager>
 	<collisions />

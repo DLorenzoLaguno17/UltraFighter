@@ -31,7 +31,8 @@ bool j1Hud::Start()
 	minutes = App->gui->CreateLabel(&labels_list, LABEL, 400, 70, text, "00:");
 	C_lifepoints = 420;
 	R_lifepoints = 420;
-
+	R_PointsToSubstract = 0;
+	C_PointsToSubstract = 0;
 
 	animation = &idle;
 
@@ -68,6 +69,15 @@ bool j1Hud::Update(float dt)
 		}
 	}
 	
+	if (R_PointsToSubstract > 0) {
+		R_lifepoints--;
+		R_PointsToSubstract--;
+	}
+	if (C_PointsToSubstract > 0) {
+		C_lifepoints--;
+		C_PointsToSubstract--;
+	}
+
 	App->tex->UnLoad(seconds->sprites);
 	seconds->sprites = App->font->Print(time_text.GetString(), seconds->color, seconds->font);
 
@@ -77,6 +87,7 @@ bool j1Hud::Update(float dt)
 		minutes->Draw(2.0f, 0, 0, false);
 	if (App->gui->debug)
 		App->render->DrawQuad({ 450, 0, 160, 64 }, 255, 0, 0, 255, false, false);
+
 
 	SDL_Rect c = { 0, 854 ,436,117 };
 	SDL_Rect r = { 0, 971 ,434,133 };

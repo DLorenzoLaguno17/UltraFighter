@@ -1,12 +1,13 @@
 # UltraFighter
 
-UltraFighter is a Street Fighter II tribute, uised with the objective of practising the playtesting of a game. 
+UltraFighter is a Street Fighter II tribute, used with the objective of practising the playtesting of a game. 
 
 Go to our GitHub: https://github.com/DLorenzoLaguno17/UltraFighter
 
 ## Storaged variables
 
 Every time a combat ends, the number of the jumps, blocks, kicks, punches and the damage taken from each player is stored in an XML file. Besides, we also record if the game ended with a KO or because of the players run out of time.
+The xml file is called savegame.xml
 
 ## Controls
 ### Ryu

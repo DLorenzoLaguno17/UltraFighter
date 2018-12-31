@@ -51,6 +51,8 @@ j1Player2::j1Player2(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TY
 	death.LoadAnimations2("ko");
 	win.LoadAnimations2("victory");
 	time_out.LoadAnimations2("time_over");
+
+	LoadPlayerProperties();
 }
 
 j1Player2::~j1Player2() {}
@@ -73,7 +75,6 @@ bool j1Player2::Start() {
 		loadedAudios = true;
 	}
 
-	LoadPlayerProperties();
 
 	animation = &idle;
 	currentJumps = initialJumps;

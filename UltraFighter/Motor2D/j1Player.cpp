@@ -51,6 +51,8 @@ j1Player::j1Player(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TYPE
 	death.LoadAnimations("ko");
 	win.LoadAnimations("victory");
 	time_out.LoadAnimations("time_over");
+
+	LoadPlayerProperties();
 }
 
 j1Player::~j1Player() {}
@@ -73,8 +75,6 @@ bool j1Player::Start() {
 		attackSoundmiss = App->audio->LoadFx("audio/streetfighter2/Sound/sound 219.wav");
 		loadedAudios = true;
 	}
-
-	LoadPlayerProperties();
 
 	//animation = &idle;
 	currentJumps = initialJumps;

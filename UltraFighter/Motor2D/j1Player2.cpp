@@ -14,6 +14,7 @@
 #include "j1Label.h"
 #include "j1Box.h"
 #include "j1Hud.h"
+#include "j1Player.h"
 
 #include "Brofiler/Brofiler.h"
 
@@ -130,6 +131,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 					jumping = true;
 					verticalSpeed = initialVerticalSpeed;
 					currentJumps++;
+					jumps++;
 				}
 
 				if (jumping) {
@@ -319,6 +321,12 @@ bool j1Player2::Update(float dt, bool do_logic) {
 			// We update the camera to followe the player every frame
 			UpdateCameraPosition();
 
+
+			if (block.Finished() && blocked_idle && App->entity->player->attackCollider->to_delete)
+				blocked_idle = false;
+			if (block_crouch.Finished() && blocked_crouch && App->entity->player->attackCollider->to_delete)
+				blocked_crouch = false;
+
 			return true;
 		}
 }
@@ -334,29 +342,20 @@ bool j1Player2::PostUpdate() {
 // Load game state
 bool j1Player2::Load(pugi::xml_node& data) {
 
-	position.x = data.child("player").child("position").attribute("x").as_int();
-	position.y = data.child("player").child("position").attribute("y").as_int();
-
-	if (hud)
-		hud->Load(data);
-
 	return true;
 }
 
 // Save game state
 bool j1Player2::Save(pugi::xml_node& data) const {
 
-	pugi::xml_node pos = data.append_child("position");
+	pugi::xml_node j = data.append_child("jumps");
+	j.append_attribute("jumps") = jumps;
 
-	pos.append_attribute("x") = position.x;
-	pos.append_attribute("y") = position.y;
+	pugi::xml_node b = data.append_child("blocks");
+	b.append_attribute("blocks") = blocks;
 
-	pugi::xml_node godmode = data.append_child("godmode");
-
-	pugi::xml_node life = data.append_child("lives");
-
-	if (hud)
-		hud->Save(data.append_child("hud"));
+	pugi::xml_node d = data.append_child("damage_taken");
+	d.append_attribute("damage_taken") = damage_taken;
 
 	return true;
 }
@@ -410,9 +409,26 @@ void j1Player2::OnCollision(Collider* col_1, Collider* col_2)
 		{
 			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_REPEAT) {
 
-				if (crouching) animation = &block_crouch;
-				else animation = &block;
-				blocking = true;
+				if (crouching)
+				{
+					animation = &block_crouch;
+					blocking = true;
+					if (!blocked_crouch)
+					{
+						blocks++;
+						blocked_crouch = true;
+					}
+				}
+				else
+				{
+					animation = &block;
+					blocking = true;
+					if (!blocked_idle)
+					{
+						blocks++;
+						blocked_idle = true;
+					}
+				}
 			}
 			else if (!blocking && !receivedDmg) {
 				receivedDmg = true;
@@ -420,6 +436,7 @@ void j1Player2::OnCollision(Collider* col_1, Collider* col_2)
 
 				if (crouching) animation = &receive_damage_crouch;
 				else animation = &receive_damage_idle;
+				damage_taken++;
 			}
 		}
 	}

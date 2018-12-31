@@ -4,27 +4,29 @@
 	<window />
 	<textures />
 	<audio />
-	<map />
+	<:anonymous />
 	<menu />
 	<scene1>
 		<activated true="true" />
 	</scene1>
 	<entityManager>
 		<player>
-			<position x="201.200012" y="59" />
-			<godmode />
-			<lives value="2" />
-			<hud>
-				<coins_score value="0" />
-				<score value="0" />
-			</hud>
+			<jumps jumps="0" />
+			<blocks blocks="3" />
+			<damage_taken damage_taken="0" />
 		</player>
+		<player2>
+			<position x="160.560089" y="160" />
+			<godmode />
+			<lives />
+			<hud />
+		</player2>
 	</entityManager>
 	<collisions />
 	<fonts />
 	<gui />
 	<fade />
 	<renderer>
-		<camera x="-404" y="0" />
+		<camera x="0" y="0" />
 	</renderer>
 </game_state>

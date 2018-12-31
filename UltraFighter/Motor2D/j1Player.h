@@ -90,6 +90,8 @@ public:
 	Collider* attackCollider = nullptr;
 	uint currentTime, lastTime = 0;
 
+	uint jumps, blocks, damage_taken = 0;
+
 	j1Hud* hud = nullptr;
 
 	float horizontalSpeed;
@@ -107,6 +109,8 @@ public:
 	bool jumping = false;
 	bool crouching = false;
 	bool blocking = false;
+	bool blocked_crouch = false;
+	bool blocked_idle = false;
 
 	bool player_start = false;
 	bool dead = false;

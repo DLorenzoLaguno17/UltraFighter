@@ -49,7 +49,7 @@ public:
 	Animation jump;
 	Animation jump_forward;
 	Animation crouch;
-	Animation blocking;
+	Animation block;
 	Animation short_punch;
 	Animation m_h_punch;
 	Animation forward_m_punch;
@@ -104,6 +104,7 @@ public:
 	bool playerIdle = false;
 	bool jumping = false;
 	bool crouching = false;
+	bool blocking = false;
 
 	bool player_start = false;
 	bool dead = false;

@@ -27,7 +27,7 @@ j1Player2::j1Player2(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TY
 	jump.LoadAnimations2("jump");
 	jump_forward.LoadAnimations2("jump_forward");
 	crouch.LoadAnimations2("crouch");
-	blocking.LoadAnimations2("blocking");
+	block.LoadAnimations2("blocking");
 	short_punch.LoadAnimations2("l_punch");
 	m_h_punch.LoadAnimations2("m_h_punch");
 	forward_m_punch.LoadAnimations2("forward_m_punch");
@@ -271,21 +271,21 @@ bool j1Player2::Update(float dt, bool do_logic) {
 			}
 			// Kick management
 			else
-				if (crouch_m_kick.Finished() || forward_h_kick.Finished() || forward_m_kick.Finished()
-					|| high_kick.Finished() || spin_kick.Finished() || crouch_l_kick.Finished()) {
+			if (crouch_m_kick.Finished() || forward_h_kick.Finished() || forward_m_kick.Finished()
+				|| high_kick.Finished() || spin_kick.Finished() || crouch_l_kick.Finished()) {
 
-					crouch_m_kick.Reset();
-					crouch_l_kick.Reset();
-					forward_l_kick.Reset();
-					forward_m_kick.Reset();
-					spin_kick.Reset();
-					high_kick.Reset();
-					attacking = false;
-					kicking = false;
+				crouch_m_kick.Reset();
+				crouch_l_kick.Reset();
+				forward_l_kick.Reset();
+				forward_m_kick.Reset();
+				spin_kick.Reset();
+				high_kick.Reset();
+				attacking = false;
+				kicking = false;
 
-					if (attackCollider != nullptr)
-						attackCollider->to_delete = true;
-				}
+				if (attackCollider != nullptr)
+					attackCollider->to_delete = true;
+			}
 
 			hud->Update(dt);
 

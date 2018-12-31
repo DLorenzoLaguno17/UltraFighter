@@ -44,10 +44,13 @@
       <animation x="1160" y="8" w="43" h="91"/>
     </crouch>
 
-    <blocking loop="false" speed="12.0f">
-      <animation x="1211" y="8" w="43" h="91"/>
+    <blocking_crouch loop="false" speed="12.0f">
       <animation x="1260" y="8" w="43" h="91"/>
-    </blocking>
+    </blocking_crouch>	
+	
+    <blocking_idle loop="false" speed="12.0f">
+      <animation x="1211" y="8" w="43" h="91"/>
+    </blocking_idle>
     
     <l_punch loop="false" speed="12.0f">
       <animation x="3" y="112" w="43" h="103"/>
@@ -164,13 +167,13 @@
       <animation x="1286" y="362" w="42" h="112"/>
     </crouch_h_kick>	
   
-    <damage_idle loop="false" speed="8.0f">
+    <damage_idle loop="false" speed="10.0f">
       <animation x="5" y="760" w="43" h="76"/>
       <animation x="53" y="760" w="43" h="76"/>
       <animation x="106" y="760" w="43" h="76"/>
     </damage_idle>
 	
-    <damage_crouch loop="false" speed="8.0f">
+    <damage_crouch loop="false" speed="10.0f">
       <animation x="1165" y="780" w="45" h="59"/>
       <animation x="1218" y="780" w="72" h="59"/>
       <animation x="1295" y="780" w="74" h="59"/>

@@ -76,7 +76,7 @@ bool j1Player::Start() {
 
 	// Setting player position
 	position.x = 3;
-	position.y = 160;
+	position.y = 125;
 
 	collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y, 35, 85 }, COLLIDER_PLAYER1, App->entity);
 
@@ -382,8 +382,8 @@ bool j1Player::CleanUp() {
 
 void j1Player::UpdateCameraPosition()
 {
-	if (position.y > 160) {
-		position.y = 160;
+	if (position.y > 125) {
+		position.y = 125;
 		jump.Reset();
 		jumping = false;
 		verticalSpeed = initialVerticalSpeed;

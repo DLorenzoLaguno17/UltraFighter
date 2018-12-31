@@ -35,8 +35,8 @@ bool j1Gui::Awake(pugi::xml_node& config)
 	logoScale = config.child("scale").attribute("logoScale").as_float();
 
 	// Copying box spawn position
-	settingsPosition.x = config.child("positions").attribute("settingsPositionX").as_int();
-	settingsPosition.y = config.child("positions").attribute("settingsPositionY").as_int();
+	settingsPosition.x = 100;
+	settingsPosition.y = 30;
 
 	slider1Y = 42;
 	slider2Y = 82;
@@ -324,22 +324,10 @@ void j1Gui::UpdateSliders(p2List<j1Box*>* sliders) {
 				item->data->position.x = item->data->maximum;	
 
 			// After that we change the volume
-			if (item->data->position.y < item->data->parent->position.y + 50) {
-				if(item->data->position.x > lastPos)
-					App->audio->FxVolume(App->audio->GetFxVolume() + (item->data->position.x - lastPos) * 2);
+			if (item->data->position.x > lastPos)
+					App->audio->MusicVolume(App->audio->GetMusicVolume() + (item->data->position.x - lastPos));
 				else
-					App->audio->FxVolume(App->audio->GetFxVolume() - (lastPos - item->data->position.x) * 2);
-
-				lastSlider1X = item->data->position.x - item->data->parent->position.x;
-			}
-			else {
-				if (item->data->position.x > lastPos)
-					App->audio->MusicVolume(App->audio->GetMusicVolume() + (item->data->position.x - lastPos) * 2);
-				else
-					App->audio->MusicVolume(App->audio->GetMusicVolume() - (lastPos - item->data->position.x) * 2);
-
-				lastSlider2X = item->data->position.x - item->data->parent->position.x;
-			}
+					App->audio->MusicVolume(App->audio->GetMusicVolume() - (lastPos - item->data->position.x));
 		}
 	}
 }

@@ -50,6 +50,7 @@ public:
 	Animation jump_forward;
 	Animation crouch;
 	Animation block;
+	Animation block_crouch;
 	Animation short_punch;
 	Animation m_h_punch;
 	Animation forward_m_punch;
@@ -82,6 +83,8 @@ public:
 	// Size of the player collider, where x = w and y = h
 	iPoint playerSize;
 	iPoint margin;
+
+	uint currentTime, lastTime = 0;
 
 	uint currentJumps;
 	uint initialJumps;

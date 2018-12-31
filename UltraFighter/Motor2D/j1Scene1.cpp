@@ -147,7 +147,6 @@ bool j1Scene1::Update(float dt)
 	// ---------------------------------------------------------------------------------------------------------------------		
 
 	App->gui->UpdateButtonsState(&scene1Buttons);
-	App->gui->UpdateWindow(settings_window, &scene1Buttons, &scene1Labels, &scene1Boxes);
 
 	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN || closeSettings) {
 		settings_window->visible = !settings_window->visible;

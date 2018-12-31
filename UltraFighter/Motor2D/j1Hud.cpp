@@ -45,10 +45,11 @@ bool j1Hud::Update(float dt)
 
 	timeleft = App->scene1->time_scene1;
 	time_text = { "%i", 120 - timeleft };
-
-	if (App->c_win || App->r_win)
+	if (App->c_win || App->r_win || timeleft >= 120)
 		time_text = { "%i", 0 };
 	
+	if (timeleft >= 120) App->timeOut = true;
+
 	if (App->entity->player->R_PointsToSubstract > 0) {
 		if (R_lifepoints > 0) 
 			R_lifepoints--;

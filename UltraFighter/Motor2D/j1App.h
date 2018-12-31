@@ -102,6 +102,7 @@ public:
 
 	bool				c_win = false;
 	bool				r_win = false;
+	bool				timeOut = false;
 
 private:
 

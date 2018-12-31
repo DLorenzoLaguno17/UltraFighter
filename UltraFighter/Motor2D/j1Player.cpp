@@ -113,7 +113,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		// CONTROL OF THE PLAYER
 		// ---------------------------------------------------------------------------------------------------------------------
 				
-		if (!receivedDmg && !dead && !App->r_win) {
+		if (!receivedDmg && !dead && !App->r_win && !App->timeOut) {
 			// Idle
 			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_IDLE
 				&& App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_IDLE
@@ -223,6 +223,10 @@ bool j1Player::Update(float dt, bool do_logic) {
 			}
 		}
 		// Damage management
+		else if (App->timeOut) {
+			attacking = false;
+			animation = &time_out;
+		}
 		else if (App->r_win) {
 			attacking = false;
 			animation = &win;
@@ -273,7 +277,9 @@ bool j1Player::Update(float dt, bool do_logic) {
 			else if (animation == &death)
 				Draw(r, false, 0, 60);
 			else if (animation == &win)
-				Draw(r, false, 0, -15);
+				Draw(r, false, 0, -35);
+			else if (animation == &time_out)
+				Draw(r, false, 0, 0);
 			else
 				Draw(r);
 		}

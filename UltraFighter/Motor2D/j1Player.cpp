@@ -154,12 +154,14 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 			// Crouch management
 			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT && attacking == false && jumping == false) {
+				collider->rect = { (int)position.x + margin.x, 160, 35, 50 };
 				animation = &crouch;
 				crouching = true;
 			}
 			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_UP || App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_IDLE) {
 				crouch.Reset();
 				crouching = false;
+				collider->rect = { (int)position.x + margin.x, (int)position.y, 35, 85 };
 			}
 
 			// Punch control
@@ -267,7 +269,15 @@ bool j1Player::Update(float dt, bool do_logic) {
 
 		// Update collider position to player position
 		if (collider != nullptr)
-			collider->SetPos(position.x + margin.x, position.y + margin.y);
+		{
+			if (App->input->GetKey(SDL_SCANCODE_S) == j1KeyState::KEY_REPEAT  && jumping == false)
+			{
+				collider->SetPos(position.x + margin.x, 160);
+			}
+			else
+				collider->SetPos(position.x + margin.x, position.y + margin.y);
+
+		}		
 
 		// ---------------------------------------------------------------------------------------------------------------------
 		// DRAWING EVERYTHING ON THE SCREEN

@@ -7,7 +7,7 @@
 	<:anonymous />
 	<menu />
 	<scene1>
-		<activated true="false" />
+		<activated true="true" />
 	</scene1>
 	<entityManager>
 		<player>

@@ -484,6 +484,7 @@ void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 				if (life == 0) {
 					dead = true;
 					App->c_win = true;
+					chun_li_wins++;
 				}
 				else {
 					if (crouching) animation = &receive_damage_crouch;

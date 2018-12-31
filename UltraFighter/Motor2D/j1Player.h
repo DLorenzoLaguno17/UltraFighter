@@ -94,6 +94,7 @@ public:
 	uint R_PointsToSubstract = 0;
 	uint life = 840;
 	uint ryu_wins = 0;
+	uint chun_li_wins = 0;
 
 	Collider* attackCollider = nullptr;
 	uint currentTime, lastTime = 0;

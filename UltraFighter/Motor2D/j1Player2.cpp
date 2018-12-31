@@ -230,7 +230,6 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		else if (App->c_win) {
 			attacking = false;
 			animation = &win;
-			chun_li_wins++;
 		}
 		else if (receivedDmg) {
 
@@ -405,7 +404,7 @@ bool j1Player2::Save(pugi::xml_node& data) const {
 	q.append_attribute("punches") = punches;
 
 	pugi::xml_node w = data.append_child("Wins");
-	w.append_attribute("wins") = chun_li_wins;
+	w.append_attribute("wins") = App->entity->player->chun_li_wins;
 
 	return true;
 }

@@ -97,7 +97,6 @@ public:
 	uint initialJumps;
 	uint C_PointsToSubstract = 0;
 	uint life = 840;
-	uint chun_li_wins = 0;
 
 	Collider* attackCollider = nullptr;
 

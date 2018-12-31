@@ -77,7 +77,7 @@ bool j1Player2::Start() {
 
 	// Setting player position
 	position.x = 270;
-	position.y = 170;
+	position.y = 125;
 
 	collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y + 20, 35, 85 }, COLLIDER_PLAYER2, App->entity);
 

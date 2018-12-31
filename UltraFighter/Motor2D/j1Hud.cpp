@@ -31,6 +31,7 @@ bool j1Hud::Start()
 	seconds = App->gui->CreateLabel(&labels_list, LABEL, 530, 80, text, time_text.GetString());
 	minutes = App->gui->CreateLabel(&labels_list, LABEL, 400, 80, text, "00 ");
 	R_lifepoints = 420;
+	C_lifepoints = 420;
 	C_startlifepoints = 465;
 
 	animation = &idle;
@@ -74,8 +75,9 @@ bool j1Hud::Update(float dt)
 		App->entity->player->R_PointsToSubstract--;
 	}
 	if (App->entity->player2->C_PointsToSubstract > 0) {
-		if(C_startlifepoints > 0) 
+		if(C_lifepoints > 0) 
 			C_startlifepoints--;
+			C_lifepoints--;
 		App->entity->player2->C_PointsToSubstract--;
 	}
 

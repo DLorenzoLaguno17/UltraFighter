@@ -32,7 +32,7 @@ bool j1Hud::Start()
 	R_lifepoints = 420;
 	C_lifepoints = 420;
 	C_startlifepoints = 465;
-	timeleft = 100;
+	timeleft = 120;
 
 	animation = &idle;
 

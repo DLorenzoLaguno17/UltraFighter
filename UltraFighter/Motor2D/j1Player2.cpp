@@ -14,6 +14,7 @@
 #include "j1Label.h"
 #include "j1Box.h"
 #include "j1Hud.h"
+#include "j1Player.h"
 
 #include "Brofiler/Brofiler.h"
 
@@ -64,8 +65,7 @@ bool j1Player2::Start() {
 		deathSound = App->audio->LoadFx("audio/fx/death.wav");
 		playerHurt = App->audio->LoadFx("audio/fx/playerHurt.wav");
 		jumpSound = App->audio->LoadFx("audio/fx/jump.wav");
-		attackSound = App->audio->LoadFx("audio/streetfighter2/Sound/jab.wav");
-		attackSoundmiss = App->audio->LoadFx("audio/streetfighter2/Sound/sound 219.wav");
+		attackSound = App->audio->LoadFx("audio/fx/attack.wav");
 		lifeup = App->audio->LoadFx("audio/fx/1-up.wav");
 		loadedAudios = true;
 	}
@@ -106,7 +106,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		// ---------------------------------------------------------------------------------------------------------------------
 		// CONTROL OF THE PLAYER
 		// ---------------------------------------------------------------------------------------------------------------------
-		if (receivedDmg == false)
+		if (!receivedDmg && !dead)
 		{
 			// Idle
 			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_IDLE
@@ -116,12 +116,12 @@ bool j1Player2::Update(float dt, bool do_logic) {
 				animation = &idle;
 
 			// Direction controls	
-			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false && blocking == false) {
+			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false) {
 				position.x += horizontalSpeed * dt;
 				animation = &move_forward;
 			}
 
-			if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false && blocking == false) {
+			if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_REPEAT && attacking == false && crouching == false) {
 				position.x -= horizontalSpeed * dt;
 				animation = &move_backwards;
 			}
@@ -131,6 +131,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 				jumping = true;
 				verticalSpeed = initialVerticalSpeed;
 				currentJumps++;
+				jumps++;
 			}
 
 			if (jumping) {
@@ -156,7 +157,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 				&& attacking == false && kicking == false && jumping == false) {
 				attacking = true;
 				punching = true;
-				App->audio->PlayFx(attackSoundmiss);
+				App->audio->PlayFx(attackSound);
 
 				if (crouching) {
 					animation = &crouch_l_punch;
@@ -220,7 +221,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 	}
 	else {
 	position.x += horizontalSpeed * dt;
-	App->audio->PlayFx(attackSound);
+
 	if (crouching) animation = &receive_damage_crouch;
 	else animation = &receive_damage_idle;
 	}
@@ -249,9 +250,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		SDL_Rect r = animation->GetCurrentFrame(dt);
 
 		if (!attacking) {
-			if (animation == &block_crouch)
-				Draw(r, true, 0, 28);
-			else if (crouching)
+			if(crouching)
 				Draw(r, true, 0, 22);
 			else
 				Draw(r, true, 0, 12);
@@ -322,6 +321,12 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		// We update the camera to followe the player every frame
 		UpdateCameraPosition();
 
+
+		if (block.Finished() && blocked_idle && App->entity->player->attackCollider->to_delete)
+			blocked_idle = false;
+		if (block_crouch.Finished() && blocked_crouch && App->entity->player->attackCollider->to_delete)
+			blocked_crouch = false;
+
 		return true;
 	}
 }
@@ -337,29 +342,20 @@ bool j1Player2::PostUpdate() {
 // Load game state
 bool j1Player2::Load(pugi::xml_node& data) {
 
-	position.x = data.child("player").child("position").attribute("x").as_int();
-	position.y = data.child("player").child("position").attribute("y").as_int();
-
-	if (hud)
-		hud->Load(data);
-
 	return true;
 }
 
 // Save game state
 bool j1Player2::Save(pugi::xml_node& data) const {
 
-	pugi::xml_node pos = data.append_child("position");
+	pugi::xml_node j = data.append_child("jumps");
+	j.append_attribute("jumps") = jumps;
 
-	pos.append_attribute("x") = position.x;
-	pos.append_attribute("y") = position.y;
+	pugi::xml_node b = data.append_child("blocks");
+	b.append_attribute("blocks") = blocks;
 
-	pugi::xml_node godmode = data.append_child("godmode");
-
-	pugi::xml_node life = data.append_child("lives");
-
-	if (hud)
-		hud->Save(data.append_child("hud"));
+	pugi::xml_node d = data.append_child("damage_taken");
+	d.append_attribute("damage_taken") = damage_taken;
 
 	return true;
 }
@@ -387,8 +383,8 @@ bool j1Player2::CleanUp() {
 
 void j1Player2::UpdateCameraPosition()
 {
-	if (position.y > 125) {
-		position.y = 125;
+	if (position.y > 160) {
+		position.y = 160;
 		jump.Reset();
 		jumping = false;
 		verticalSpeed = initialVerticalSpeed;
@@ -413,18 +409,44 @@ void j1Player2::OnCollision(Collider* col_1, Collider* col_2)
 		{
 			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_REPEAT) {
 
-				if (crouching) animation = &block_crouch;
-				else animation = &block;
-				blocking = true;
+				if (crouching)
+				{
+					animation = &block_crouch;
+					blocking = true;
+					if (!blocked_crouch)
+					{
+						blocks++;
+						blocked_crouch = true;
+					}
+				}
+				else
+				{
+					animation = &block;
+					blocking = true;
+					if (!blocked_idle)
+					{
+						blocks++;
+						blocked_idle = true;
+					}
+				}
 			}
 			else if (!blocking && !receivedDmg) {
 				receivedDmg = true;
 				attacking = false;
 
-				C_PointsToSubstract += 60;
+				life -= 60;
 
-				if (crouching) animation = &receive_damage_crouch;
-				else animation = &receive_damage_idle;
+				if (life < 0) life = 0;
+
+				if (life == 0) {
+					dead = true;
+				}
+				else {
+					if (crouching) animation = &receive_damage_crouch;
+					else animation = &receive_damage_idle;
+				}
+
+				damage_taken++;
 			}
 		}
 	}

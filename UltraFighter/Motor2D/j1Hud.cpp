@@ -28,11 +28,11 @@ bool j1Hud::Start()
 	Ryulifebad = App->tex->Load("gui/Ui.png");
 	Chunlilifegood = App->tex->Load("gui/Ui.png");
 	Chunlilifebad = App->tex->Load("gui/Ui.png");
-	seconds = App->gui->CreateLabel(&labels_list, LABEL, 530, 80, text, time_text.GetString());
-	minutes = App->gui->CreateLabel(&labels_list, LABEL, 400, 80, text, "00 ");
+	seconds = App->gui->CreateLabel(&labels_list, LABEL, 470, 85, text, time_text.GetString());
 	R_lifepoints = 420;
 	C_lifepoints = 420;
 	C_startlifepoints = 465;
+	timeleft = 100;
 
 	animation = &idle;
 
@@ -42,32 +42,9 @@ bool j1Hud::Start()
 bool j1Hud::Update(float dt)
 {
 	//TIMER
-	if (App->scene1->active)
-	{
-		time_text = { "%i", App->scene1->time_scene1 };
-		if (App->scene1->time_scene1 == 60)
-		{
-			min += 1;
-			App->tex->UnLoad(minutes->sprites);
-			App->scene1->startup_time.Start();
-			time_text = { "%i", App->scene1->time_scene1 };
-			if (min < 10)
-			{
-				min_text_left.Clear();
-				min_text = { "%i", min };
-				min_text_left.operator+=("0");
-				min_text_left.operator+=(min_text);
-				min_text_left.operator+=(":");
-				minutes->sprites = App->font->Print(min_text_left.GetString(), minutes->color, minutes->font);
-			}
-			else
-			{
-				min_text = { "%i", min };
-				min_text.operator+=(":");
-				minutes->sprites = App->font->Print(min_text.GetString(), minutes->color, minutes->font);
-			}
-		}
-	}
+
+	timeleft = App->scene1->time_scene1;
+	time_text = { "%i", 100 - timeleft };
 	
 	if (App->entity->player->R_PointsToSubstract > 0) {
 		if (R_lifepoints > 0) 
@@ -86,8 +63,6 @@ bool j1Hud::Update(float dt)
 
 	if (seconds->sprites != nullptr)
 		seconds->Draw(1.5f, 0, 0, false);
-	if (minutes->sprites != nullptr)
-		minutes->Draw(1.5f, 0, 0, false);
 	if (App->gui->debug)
 		App->render->DrawQuad({ 450, 0, 160, 64 }, 255, 0, 0, 255, false, false);
 

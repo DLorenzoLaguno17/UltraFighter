@@ -41,18 +41,17 @@ public:
 	p2SString min_text_left = "0";
 	p2SString score;
 	p2SString score_points;
+	int timeleft;
 
 	uint R_lifepoints;
 	uint C_lifepoints;
 	uint C_startlifepoints;
 
 	j1Label* seconds;
-	j1Label* minutes;
 
 	_TTF_Font* text = nullptr;
 	
 	int time;
-	int min = 00;
 
 	Animation* animation = nullptr;
 	Animation idle;

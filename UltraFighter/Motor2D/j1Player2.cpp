@@ -260,7 +260,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		// Update collider position to player position
 	if (collider != nullptr)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == j1KeyState::KEY_REPEAT && attacking == false && jumping == false)
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == j1KeyState::KEY_REPEAT && jumping == false)
 		{
 			collider->SetPos(position.x + margin.x, 160);
 		}

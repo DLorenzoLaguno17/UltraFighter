@@ -89,6 +89,8 @@ bool j1Player::Start() {
 	hud->Start();
 
 	player_start = true;
+	App->r_win = false;
+	App->c_win = false;
 	return true;
 }
 
@@ -222,6 +224,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		}
 		// Damage management
 		else if (App->r_win) {
+			attacking = false;
 			animation = &win;
 		}
 		else if (receivedDmg) {
@@ -269,6 +272,8 @@ bool j1Player::Update(float dt, bool do_logic) {
 				Draw(r, false, 0, 35);
 			else if (animation == &death)
 				Draw(r, false, 0, 60);
+			else if (animation == &win)
+				Draw(r, false, 0, -15);
 			else
 				Draw(r);
 		}

@@ -218,6 +218,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		}
 		// Damage management
 		else if (App->c_win) {
+			attacking = false;
 			animation = &win;
 		}
 		else if (receivedDmg) {
@@ -459,7 +460,7 @@ void j1Player2::OnCollision(Collider* col_1, Collider* col_2)
 
 				if (life == 0) {
 					dead = true;
-					App->c_win = true;
+					App->r_win = true;
 				}
 				else {
 					if (crouching) animation = &receive_damage_crouch;

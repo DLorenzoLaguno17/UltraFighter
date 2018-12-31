@@ -75,6 +75,7 @@ public:
 	uint jumpSound;
 	uint playerHurt;
 	uint attackSound;
+	uint attackSoundmiss;
 	uint lifeup;
 
 	// To know the last direction the character was moving to

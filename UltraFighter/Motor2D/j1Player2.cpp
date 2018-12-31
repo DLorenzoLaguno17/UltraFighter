@@ -64,7 +64,8 @@ bool j1Player2::Start() {
 		deathSound = App->audio->LoadFx("audio/fx/death.wav");
 		playerHurt = App->audio->LoadFx("audio/fx/playerHurt.wav");
 		jumpSound = App->audio->LoadFx("audio/fx/jump.wav");
-		attackSound = App->audio->LoadFx("audio/fx/attack.wav");
+		attackSound = App->audio->LoadFx("audio/streetfighter2/Sound/jab.wav");
+		attackSoundmiss = App->audio->LoadFx("audio/streetfighter2/Sound/sound 219.wav");
 		lifeup = App->audio->LoadFx("audio/fx/1-up.wav");
 		loadedAudios = true;
 	}
@@ -155,7 +156,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 				&& attacking == false && kicking == false && jumping == false) {
 				attacking = true;
 				punching = true;
-				App->audio->PlayFx(attackSound);
+				App->audio->PlayFx(attackSoundmiss);
 
 				if (crouching) {
 					animation = &crouch_l_punch;
@@ -219,7 +220,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 	}
 	else {
 	position.x += horizontalSpeed * dt;
-
+	App->audio->PlayFx(attackSound);
 	if (crouching) animation = &receive_damage_crouch;
 	else animation = &receive_damage_idle;
 	}

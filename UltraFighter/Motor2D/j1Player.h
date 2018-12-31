@@ -75,6 +75,7 @@ public:
 	uint jumpSound;
 	uint playerHurt;
 	uint attackSound;
+	uint attackSoundmiss;
 	uint lifeup;
 
 	// To know the last direction the character was moving to
@@ -86,6 +87,8 @@ public:
 
 	uint currentJumps;
 	uint initialJumps;
+
+	uint R_PointsToSubstract = 0;
 
 	Collider* attackCollider = nullptr;
 	uint currentTime, lastTime = 0;

@@ -116,6 +116,9 @@ bool j1Scene1::Start()
 		SDL_Rect clicked2 = { 0, 755, 338, 40 };
 		App->gui->CreateButton(&scene1Buttons, BUTTON, 20, 40, idle2, hovered2, clicked2, gui_tex, CLOSE_SETTINGS, (j1UserInterfaceElement*)settings_window);
 
+		SDL_Rect sliderTex = { 0, 532, 25, 66 };
+		App->gui->CreateBox(&scene1Boxes, BUTTON, 70, 107, sliderTex, gui_tex, (j1UserInterfaceElement*)settings_window, 110, 226);
+
 		SDL_Rect rect3 = { 0,842,420,11 };
 		App->gui->CreateButton(&scene1Buttons, BUTTON, 8, 115, rect3, rect3, rect3, gui_tex, NO_FUNCTION, (j1UserInterfaceElement*)settings_window);
 		startup_time.Start();
@@ -160,7 +163,13 @@ bool j1Scene1::Update(float dt)
 			}
 		}
 
-
+		for (p2List_item<j1Box*>* item = scene1Boxes.start; item != nullptr; item = item->next) {
+			if (item->data->parent == settings_window) {
+				item->data->visible = !item->data->visible;
+				item->data->position.x = settings_window->position.x + item->data->initialPosition.x;
+				item->data->position.y = settings_window->position.y + item->data->initialPosition.y;
+			}
+		}
 
 		if (!settings_window->visible) closeSettings = false;
 	}
@@ -190,12 +199,6 @@ bool j1Scene1::Update(float dt)
 			else if (item->data->bfunction == CLOSE_SETTINGS) {
 				closeSettings = true;
 			}
-			else if (item->data->bfunction == SAVE_GAME) {
-				App->SaveGame("save_game.xml");
-			}
-			else if (item->data->bfunction == CLOSE_GAME) {
-				continueGame = false;
-			}
 			break;
 
 		case CLICKED:
@@ -203,30 +206,7 @@ bool j1Scene1::Update(float dt)
 			break;
 		}
 	}
-
-	// Load and Save
-	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
-	{
-		App->LoadGame("save_game.xml");
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
-		App->SaveGame("save_game.xml");
-
-	// Managing scene transitions
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN || resettingLevel)
-	{
-		resettingLevel = true;
-		App->fade->FadeToBlack();
-
-		if (App->fade->IsFading() == 0) {
-			App->entity->player->position = initialScene1Position;
-			App->render->camera.x = 0;
-			App->entity->player->facingRight = true;
-			resettingLevel = false;
-		}
-	}
-
+	
 	if (backToMenu && App->fade->IsFading() == 0)
 		ChangeSceneMenu();
 
@@ -234,12 +214,12 @@ bool j1Scene1::Update(float dt)
 	// DRAWING EVERYTHING ON THE SCREEN
 	// ---------------------------------------------------------------------------------------------------------------------	
 
-	App->render->Blit(graphics, 0, 35, &sky);
-	App->render->Blit(graphics, 0, 35, &background);
-	App->render->Blit(graphics, 0, 100, &grid);
-	App->render->Blit(graphics, 0, 150, &(couple_left.GetCurrentFrame(0.3f)));
-	App->render->Blit(graphics, 100, 150, &(guys.GetCurrentFrame(0.2f)));
-	App->render->Blit(graphics, 200, 150, &(couple_right.GetCurrentFrame(0.4f)));
+	App->render->Blit(graphics, 0, 0, &sky);
+	App->render->Blit(graphics, 0, 0, &background);
+	App->render->Blit(graphics, 0, 65, &grid);
+	App->render->Blit(graphics, 0, 115, &(couple_left.GetCurrentFrame(0.3f)));
+	App->render->Blit(graphics, 100, 115, &(guys.GetCurrentFrame(0.2f)));
+	App->render->Blit(graphics, 200, 115, &(couple_right.GetCurrentFrame(0.4f)));
 
 	return true;
 }

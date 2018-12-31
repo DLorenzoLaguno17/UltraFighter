@@ -60,39 +60,20 @@ bool j1SceneMenu::Start()
 		font = App->font->Load("fonts/PixelCowboy/PixelCowboy.otf", 8);
 
 		// Creating UI		
-		settings_window = App->gui->CreateBox(&menuBoxes, BOX, App->gui->settingsPosition.x, App->gui->settingsPosition.y, { 537, 0, 663, 712 }, gui_tex);
-		settings_window->visible = false;
 
 		// We will use it to check if there is a save file
 		pugi::xml_document save_game;
 		pugi::xml_parse_result result = save_game.load_file("save_game.xml");
 
-		App->gui->CreateBox(&menuBoxes, BOX, App->gui->lastSlider1X, App->gui->slider1Y, { 0, 532, 25, 66 }, gui_tex, (j1UserInterfaceElement*)settings_window, App->gui->minimum, App->gui->maximum);
-		App->gui->CreateBox(&menuBoxes, BOX, App->gui->lastSlider2X, App->gui->slider2Y, { 0, 532, 25, 66 }, gui_tex, (j1UserInterfaceElement*)settings_window, App->gui->minimum, App->gui->maximum);
-
 		SDL_Rect idle = {0, 0, 406, 58};
 		SDL_Rect hovered = { 0, 59, 406, 57 };
 		SDL_Rect clicked = { 0, 117, 406, 58 };
-		App->gui->CreateButton(&menuButtons, BUTTON, 170, 120, idle, hovered, clicked, gui_tex, PLAY_GAME);
+		App->gui->CreateButton(&menuButtons, BUTTON, 190, 150, idle, hovered, clicked, gui_tex, PLAY_GAME);
 
 		SDL_Rect idle2 = { 0, 176, 251, 58 };
 		SDL_Rect hovered2 = { 0, 235, 251, 58 };
 		SDL_Rect clicked2 = { 0, 293, 251, 58 };
-		App->gui->CreateButton(&menuButtons, BUTTON, 170, 150, idle2, hovered2, clicked2, gui_tex, CLOSE_GAME);
-
-		//App->gui->CreateButton(&menuButtons, BUTTON, 64, 135, idle2, hovered2, clicked2, gui_tex, CLOSE_SETTINGS, (j1UserInterfaceElement*)settings_window);
-
-		/*SDL_Rect idle3 = { 463, 109, 49, 49 };
-		SDL_Rect hovered3 = { 463, 158, 49, 49 };
-		SDL_Rect clicked3 = { 463, 207, 49, 49 };
-		App->gui->CreateButton(&menuButtons, BUTTON, 3, 3, idle3, hovered3, clicked3, gui_tex, SETTINGS);
-
-		App->gui->CreateLabel(&menuLabels, LABEL, 106, 115, font, "Start", App->gui->beige);
-		App->gui->CreateLabel(&menuLabels, LABEL, 98, 165, font, "Credits", App->gui->beige);
-		App->gui->CreateLabel(&menuLabels, LABEL, 90, 140, font, "Continue", App->gui->beige);
-		App->gui->CreateLabel(&menuLabels, LABEL, 44, 9, font, "Settings", App->gui->brown, (j1UserInterfaceElement*)settings_window);
-		App->gui->CreateLabel(&menuLabels, LABEL, 30, 50, font, "Sound", App->gui->brown, (j1UserInterfaceElement*)settings_window);
-		App->gui->CreateLabel(&menuLabels, LABEL, 30, 89, font, "Music", App->gui->brown, (j1UserInterfaceElement*)settings_window);*/
+		App->gui->CreateButton(&menuButtons, BUTTON, 190, 180, idle2, hovered2, clicked2, gui_tex, CLOSE_GAME);
 
 		player_created = false;
 	}
@@ -138,47 +119,8 @@ bool j1SceneMenu::Update(float dt)
 					startGame = true;
 					App->fade->FadeToBlack();
 				}
-				else if (item->data->bfunction == LOAD_GAME) {
-					loadGame = true;
-					App->fade->FadeToBlack();
-				}
 				else if (item->data->bfunction == CLOSE_GAME) {
 					continueGame = false;
-				}
-				else 
-				if ((item->data->bfunction == SETTINGS && !settings_window->visible) 
-					|| (item->data->bfunction == CLOSE_SETTINGS && settings_window->visible)) {
-					settings_window->visible = !settings_window->visible;
-					settings_window->position = App->gui->settingsPosition;
-
-					for (p2List_item<j1Button*>* item = menuButtons.start; item != nullptr; item = item->next) {
-						if (item->data->parent == settings_window) {
-							item->data->visible = !item->data->visible;
-							item->data->position.x = settings_window->position.x + item->data->initialPosition.x;
-							item->data->position.y = settings_window->position.y + item->data->initialPosition.y;
-						}
-					}
-					for (p2List_item<j1Label*>* item = menuLabels.start; item != nullptr; item = item->next) {
-						if (item->data->parent == settings_window) {
-							item->data->visible = !item->data->visible;
-							item->data->position.x = settings_window->position.x + item->data->initialPosition.x;
-							item->data->position.y = settings_window->position.y + item->data->initialPosition.y;
-						}
-					}
-					for (p2List_item<j1Box*>* item = menuBoxes.start; item != nullptr; item = item->next) {
-						if (item->data->parent == settings_window) {
-							item->data->visible = !item->data->visible;
-							item->data->position.x = settings_window->position.x + item->data->initialPosition.x;
-							item->data->position.y = settings_window->position.y + item->data->initialPosition.y;
-
-							item->data->minimum = item->data->originalMinimum + settings_window->position.x;
-							item->data->maximum = item->data->originalMaximum + settings_window->position.x;
-						}
-					}
-				}
-				else if (item->data->bfunction == OPEN_CREDITS) {
-					openCredits = true;
-					App->fade->FadeToBlack();
 				}
 				break;
 
@@ -204,48 +146,18 @@ bool j1SceneMenu::Update(float dt)
 	// ---------------------------------------------------------------------------------------------------------------------	
 
 	SDL_Rect rect = { 0,0,1024,768 };
-	App->render->Blit(background, 0, 0, &rect, SDL_FLIP_NONE, 1.0f, 0.333333333333);
-
-	SDL_Rect rect2 = { 0,352,507,58 };
-	App->render->Blit(gui_tex, 170, 180, &rect2, SDL_FLIP_NONE, 1.0f, App->gui->buttonsScale);
-
-	SDL_Rect rect3 = { 0,842,420,11 };
-	App->render->Blit(gui_tex, 170, 210, &rect3, SDL_FLIP_NONE, 1.0f, App->gui->buttonsScale);
+	App->render->Blit(background, 0, 0, &rect, SDL_FLIP_NONE, 1.0f, 0.333333333333f);
 
 	// Blitting the buttons and labels of the menu
 	for (p2List_item<j1Button*>* item = menuButtons.start; item != nullptr; item = item->next) {
 		if (item->data->parent != nullptr) continue;
 		item->data->Draw(App->gui->buttonsScale);
 	}
-	for (p2List_item<j1Label*>* item = menuLabels.start; item != nullptr; item = item->next) {
-		if (item->data->parent != nullptr) continue;
-		if (item->data->visible) item->data->Draw();
-	}
-	
 
 	// Blitting settings window
 	if (settings_window != nullptr && settings_window->visible == true)
 		settings_window->Draw(App->gui->settingsWindowScale);
-
-	// Blitting the buttons, labels and boxes (sliders) of the window
-	for (p2List_item<j1Button*>* item = menuButtons.start; item != nullptr; item = item->next) {
-		if (item->data->parent == nullptr) continue;
-
-		if (item->data->parent->visible == false)
-			item->data->visible = false;
-		else
-			item->data->Draw(App->gui->buttonsScale);
-		
-	}
-
-	for (p2List_item<j1Box*>* item = menuBoxes.start; item != nullptr; item = item->next) {
-		if (item->data->parent == nullptr) continue;
-
-		if (item->data->parent->visible == false)
-			item->data->visible = false;
-		else
-			item->data->Draw(App->gui->buttonsScale);
-	}
+	
 
 	return true;
 }

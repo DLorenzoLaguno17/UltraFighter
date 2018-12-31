@@ -65,8 +65,9 @@ bool j1Player::Start() {
 		deathSound = App->audio->LoadFx("audio/fx/death.wav");
 		playerHurt = App->audio->LoadFx("audio/fx/playerHurt.wav");
 		jumpSound = App->audio->LoadFx("audio/fx/jump.wav");
-		attackSound = App->audio->LoadFx("audio/fx/attack.wav");
+		attackSound = App->audio->LoadFx("audio/streetfighter2/Sound/jab.wav");
 		lifeup = App->audio->LoadFx("audio/fx/1-up.wav");
+		attackSoundmiss = App->audio->LoadFx("audio/streetfighter2/Sound/sound 219.wav");
 		loadedAudios = true;
 	}
 
@@ -77,7 +78,7 @@ bool j1Player::Start() {
 
 	// Setting player position
 	position.x = 3;
-	position.y = 160;
+	position.y = 125;
 
 	collider = App->collisions->AddCollider({ (int)position.x + margin.x, (int)position.y, 35, 85 }, COLLIDER_PLAYER1, App->entity);
 
@@ -157,7 +158,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 				&& attacking == false && kicking == false && jumping == false) {
 				attacking = true;
 				punching = true;
-				App->audio->PlayFx(attackSound);
+				App->audio->PlayFx(attackSoundmiss);
 
 				if (crouching) {
 					animation = &crouch_m_punch;
@@ -224,7 +225,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		}
 		else {
 			position.x -= horizontalSpeed * dt;
-
+			App->audio->PlayFx(attackSound);
 			if (crouching) animation = &receive_damage_crouch;
 			else animation = &receive_damage_idle;
 		}
@@ -380,8 +381,8 @@ bool j1Player::CleanUp() {
 
 void j1Player::UpdateCameraPosition()
 {
-	if (position.y > 160) {
-		position.y = 160;
+	if (position.y > 125) {
+		position.y = 125;
 		jump.Reset();
 		jumping = false;
 		verticalSpeed = initialVerticalSpeed;
@@ -429,6 +430,8 @@ void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 			else if (!blocking && !receivedDmg){
 				receivedDmg = true;
 				attacking = false;
+
+				R_PointsToSubstract += 60;
 
 				if (crouching) animation = &receive_damage_crouch;
 				else animation = &receive_damage_idle;

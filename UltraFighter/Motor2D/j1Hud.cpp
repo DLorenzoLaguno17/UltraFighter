@@ -7,12 +7,12 @@
 #include "j1Fonts.h"
 #include "j1Render.h"
 #include "j1Player.h"
+#include "j1Player2.h"
 #include "j1Input.h"
 
 j1Hud::j1Hud() 
 {
 	animation = NULL;
-	sprites = nullptr;
 	
 }
 
@@ -20,19 +20,19 @@ j1Hud::~j1Hud() {}
 
 bool j1Hud::Start()
 {
-	text = App->font->Load("fonts/PixelCowboy/PixelCowboy.otf", 8);
-
-	sprites = App->tex->Load("textures/coin.png");
-	lives_tex = App->tex->Load("textures/life.png");
-
-	seconds = App->gui->CreateLabel(&labels_list, LABEL, 540, 0, text, time_text.GetString());
-	minutes = App->gui->CreateLabel(&labels_list, LABEL, 450, 0, text, "00:");
-
-
-	if (App->scene1->active)
-		coins_label = App->gui->CreateLabel(&labels_list, LABEL, 80, 700, text, score.GetString(), { 255, 255, 255, 255 });
-
-	score_label = App->gui->CreateLabel(&labels_list, LABEL, 900, 0, text, score_points.GetString(), { 236, 151, 0, 255 });
+	text = App->font->Load("fonts/PixelCowboy/PixelCowboy.ttf", 8);
+	Ryu = App->tex->Load("gui/Ui.png");
+	Chunli = App->tex->Load("gui/Ui.png");
+	vs = App->tex->Load("gui/Ui.png");
+	Ryulifegood = App->tex->Load("gui/Ui.png");
+	Ryulifebad = App->tex->Load("gui/Ui.png");
+	Chunlilifegood = App->tex->Load("gui/Ui.png");
+	Chunlilifebad = App->tex->Load("gui/Ui.png");
+	seconds = App->gui->CreateLabel(&labels_list, LABEL, 470, 85, text, time_text.GetString());
+	R_lifepoints = 420;
+	C_lifepoints = 420;
+	C_startlifepoints = 465;
+	timeleft = 100;
 
 	animation = &idle;
 
@@ -42,73 +42,44 @@ bool j1Hud::Start()
 bool j1Hud::Update(float dt)
 {
 	//TIMER
-	if (App->scene1->active)
-	{
-		time_text = { "%i", App->scene1->time_scene1 };
-		if (App->scene1->time_scene1 == 60)
-		{
-			min += 1;
-			App->tex->UnLoad(minutes->sprites);
-			App->scene1->startup_time.Start();
-			time_text = { "%i", App->scene1->time_scene1 };
-			if (min < 10)
-			{
-				min_text_left.Clear();
-				min_text = { "%i", min };
-				min_text_left.operator+=("0");
-				min_text_left.operator+=(min_text);
-				min_text_left.operator+=(":");
-				minutes->sprites = App->font->Print(min_text_left.GetString(), minutes->color, minutes->font);
-			}
-			else
-			{
-				min_text = { "%i", min };
-				min_text.operator+=(":");
-				minutes->sprites = App->font->Print(min_text.GetString(), minutes->color, minutes->font);
-			}
-		}
-	}
+
+	timeleft = App->scene1->time_scene1;
+	time_text = { "%i", 100 - timeleft };
 	
+	if (App->entity->player->R_PointsToSubstract > 0) {
+		if (R_lifepoints > 0) 
+			R_lifepoints--;
+		App->entity->player->R_PointsToSubstract--;
+	}
+	if (App->entity->player2->C_PointsToSubstract > 0) {
+		if(C_lifepoints > 0) 
+			C_startlifepoints--;
+			C_lifepoints--;
+		App->entity->player2->C_PointsToSubstract--;
+	}
+
 	App->tex->UnLoad(seconds->sprites);
 	seconds->sprites = App->font->Print(time_text.GetString(), seconds->color, seconds->font);
 
 	if (seconds->sprites != nullptr)
-		seconds->Draw(1.0f, 0, 0, false);
-	if (minutes->sprites != nullptr)
-		minutes->Draw(1.0f, 0, 0, false);
+		seconds->Draw(1.5f, 0, 0, false);
 	if (App->gui->debug)
 		App->render->DrawQuad({ 450, 0, 160, 64 }, 255, 0, 0, 255, false, false);
 
-	//COIN
-	SDL_Rect r = animation->GetCurrentFrame(dt);
-	App->render->Blit(sprites, 3, 700, &r, SDL_FLIP_NONE, 1.0f, 1, 0, INT_MAX, INT_MAX, false);
-	if (App->gui->debug)
-		App->render->DrawQuad({ 3, 700, r.w*4, r.h*4 }, 255, 0, 0, 255, false, false);
 
-	//PLAYER LIVES
-	int space = 0;
-
-	//LABELS
-	if (coins_label != nullptr)
-	{
-		App->tex->UnLoad(coins_label->sprites);
-		coins_label->sprites = App->font->Print(score.GetString(), coins_label->color, coins_label->font);
-		if (coins_label->sprites != nullptr)
-			coins_label->Draw(1.0f, 0, 0, false);
-
-		if (App->gui->debug)
-			App->render->DrawQuad({ 80, 700, 64, 64 }, 255, 0, 0, 255, false, false);
-	}
-
-	if (score_label != nullptr)
-	{
-		App->tex->UnLoad(score_label->sprites);
-		score_label->sprites = App->font->Print(score_points.GetString(), score_label->color, score_label->font);
-		if (score_label->sprites != nullptr)
-			score_label->Draw(1.0f, 0, 0, false);
-		if (App->gui->debug)
-			App->render->DrawQuad({ 900, 0, 124, 64 }, 255, 0, 0, 255, false, false);
-	}
+	SDL_Rect c = { 0, 854 ,436,117 };
+	SDL_Rect r = { 0, 971 ,434,133 };
+	SDL_Rect v = { 0, 1105 ,70,44 };
+	SDL_Rect liferyu = { 465, 843, R_lifepoints,11 };
+	SDL_Rect lifebad = { 0, 842 ,420,11 };
+	SDL_Rect lifechunli = { C_startlifepoints, 843, 420,11 };
+	App->render->Blit(Ryu, 20, 20, &r , SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(Chunli, 540, 20, &c, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(vs, 470, 30, &v , SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(Ryulifegood, 20, 5, &lifebad, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(Ryulifebad, 20, 5, &liferyu, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(Chunlilifegood, 555, 5, &lifebad, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(Chunlilifebad, 555, 5, &lifechunli, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 
 	return true;
 }
@@ -120,8 +91,13 @@ bool j1Hud::CleanUp()
 		labels_list.del(item);
 	}
 
-	App->tex->UnLoad(sprites);
-	App->tex->UnLoad(lives_tex);
+	App->tex->UnLoad(Ryu);
+	App->tex->UnLoad(Chunli);
+	App->tex->UnLoad(vs);
+	App->tex->UnLoad(Ryulifegood);
+	App->tex->UnLoad(Ryulifebad);
+	App->tex->UnLoad(Chunlilifegood);
+	App->tex->UnLoad(Chunlilifebad);
 
 	return true;
 }

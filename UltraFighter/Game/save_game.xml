@@ -7,8 +7,7 @@
 	<:anonymous />
 	<menu />
 	<scene1>
-		<activated true="false" />
-		<TimeLeft />
+		<Time out />
 	</scene1>
 	<entityManager />
 	<collisions />

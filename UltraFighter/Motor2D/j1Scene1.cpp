@@ -252,10 +252,8 @@ bool j1Scene1::Load(pugi::xml_node& node)
 
 bool j1Scene1::Save(pugi::xml_node& node) const
 {
-	pugi::xml_node activated = node.append_child("activated");
-	activated.append_attribute("true") = active;
 
-	pugi::xml_node g = node.append_child("TimeLeft");
+	pugi::xml_node g = node.append_child("Time out");
 	if (App->entity->player != nullptr)
 	{
 		if (App->entity->player->hud->timeleft >= 120)

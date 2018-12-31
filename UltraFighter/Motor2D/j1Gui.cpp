@@ -324,10 +324,14 @@ void j1Gui::UpdateSliders(p2List<j1Box*>* sliders) {
 				item->data->position.x = item->data->maximum;	
 
 			// After that we change the volume
-			if (item->data->position.x > lastPos)
-					App->audio->MusicVolume(App->audio->GetMusicVolume() + (item->data->position.x - lastPos));
-				else
-					App->audio->MusicVolume(App->audio->GetMusicVolume() - (lastPos - item->data->position.x));
+			if (item->data->position.x > lastPos) {
+				App->audio->MusicVolume(App->audio->GetMusicVolume() + (item->data->position.x - lastPos));
+				App->audio->FxVolume(App->audio->GetFxVolume() + (item->data->position.x - lastPos));
+			}
+			else {
+				App->audio->MusicVolume(App->audio->GetMusicVolume() - (lastPos - item->data->position.x));
+				App->audio->FxVolume(App->audio->GetFxVolume() - (lastPos - item->data->position.x));
+			}
 		}
 	}
 }

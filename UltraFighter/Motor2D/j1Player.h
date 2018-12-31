@@ -89,6 +89,7 @@ public:
 	uint initialJumps;
 
 	uint R_PointsToSubstract = 0;
+	uint life = 840;
 
 	Collider* attackCollider = nullptr;
 	uint currentTime, lastTime = 0;

@@ -108,7 +108,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		// CONTROL OF THE PLAYER
 		// ---------------------------------------------------------------------------------------------------------------------
 				
-		if (!receivedDmg) {
+		if (!receivedDmg && !dead) {
 			// Idle
 			if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_IDLE
 				&& App->input->GetKey(SDL_SCANCODE_A) == j1KeyState::KEY_IDLE
@@ -432,9 +432,18 @@ void j1Player::OnCollision(Collider* col_1, Collider* col_2)
 				attacking = false;
 
 				R_PointsToSubstract += 60;
+				life -= 60;
 
-				if (crouching) animation = &receive_damage_crouch;
-				else animation = &receive_damage_idle;
+				if (life < 0) life = 0;
+
+				if (life == 0) {
+					dead = true;
+				}
+				else {
+					if (crouching) animation = &receive_damage_crouch;
+					else animation = &receive_damage_idle;
+				}
+
 				damage_taken++;
 			}
 		}

@@ -1,6 +1,6 @@
 # UltraFighter
 
-UltraFighter is a Street Fighter II tribute, uised with the objective of practising the playtesting of a game. 
+UltraFighter is a Street Fighter II tribute, used with the objective of practising the playtesting of a game. 
 
 Go to our GitHub: https://github.com/DLorenzoLaguno17/UltraFighter
 
@@ -35,6 +35,6 @@ Those controls are the basics, even though there are special combinations by usi
 
 ## Authors
 
-This game has been created by “scar Faura, Daniel Lorenzo, Jacobo Galofre, Ferr‡n BarnÈs & Vladislav Bulantsev.
+This game has been created by √íscar Faura, Daniel Lorenzo, Jacobo Galofre, Ferr√†n Barn√©s & Vladislav Bulantsev.
 Licensed under the [MIT License](LICENSE).
 

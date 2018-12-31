@@ -229,7 +229,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 			}
 		}
 		// Damage management
-		else if (App->timeOut) {
+		else if (App->timeOut && !App->r_win && !App->c_win) {
 			attacking = false;
 			animation = &time_out;
 			position.y = 125;

@@ -35,6 +35,7 @@ bool j1Hud::Start()
 	timeleft = 120;
 
 	animation = &idle;
+	lastTime = SDL_GetTicks();
 
 	return true;
 }
@@ -42,13 +43,21 @@ bool j1Hud::Start()
 bool j1Hud::Update(float dt)
 {
 	//TIMER
+	currentTime = SDL_GetTicks();
 
 	timeleft = App->scene1->time_scene1;
 	time_text = { "%i", 120 - timeleft };
 	if (App->c_win || App->r_win || timeleft >= 120)
 		time_text = { "%i", 0 };
 	
-	if (timeleft >= 120) App->timeOut = true;
+	if (App->c_win || App->r_win || timeleft >= 120) App->timeOut = true;
+
+	if (App->timeOut && !App->takenTime) {
+		lastTime = SDL_GetTicks();
+		App->takenTime = true;
+	}
+
+	if (App->timeOut && currentTime > lastTime + 3000) App->gameFinished = true;
 
 	if (App->entity->player->R_PointsToSubstract > 0) {
 		if (R_lifepoints > 0) 

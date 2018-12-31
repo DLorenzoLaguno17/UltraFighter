@@ -205,6 +205,13 @@ bool j1Scene1::Update(float dt)
 			break;
 		}
 	}
+
+	if (App->gameFinished) {
+		backToMenu = true;
+		App->gamePaused = false;
+		settings_window->visible = false;
+		App->fade->FadeToBlack();
+	}
 	
 	if (backToMenu && App->fade->IsFading() == 0)
 	{

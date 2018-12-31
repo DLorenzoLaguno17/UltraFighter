@@ -220,6 +220,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		else if (App->timeOut) {
 		attacking = false;
 		animation = &time_out;
+		position.y = 125;
 		}
 		else if (App->c_win) {
 			attacking = false;

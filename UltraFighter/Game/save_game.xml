@@ -11,14 +11,14 @@
 	</scene1>
 	<entityManager>
 		<player>
-			<jumps jumps="9" />
-			<blocks blocks="3" />
-			<damage_taken damage_taken="2" />
+			<jumps jumps="0" />
+			<blocks blocks="0" />
+			<damage_taken damage_taken="0" />
 		</player>
 		<player2>
 			<jumps jumps="0" />
 			<blocks blocks="0" />
-			<damage_taken damage_taken="6" />
+			<damage_taken damage_taken="0" />
 		</player2>
 	</entityManager>
 	<collisions />

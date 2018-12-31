@@ -103,6 +103,8 @@ public:
 	bool				c_win = false;
 	bool				r_win = false;
 	bool				timeOut = false;
+	bool				gameFinished = false;
+	bool				takenTime = false;
 
 private:
 

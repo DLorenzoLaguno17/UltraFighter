@@ -91,6 +91,10 @@ bool j1Player::Start() {
 	player_start = true;
 	App->r_win = false;
 	App->c_win = false;
+	App->timeOut = false;
+	App->gameFinished = false; 
+	App->takenTime = false;
+
 	return true;
 }
 
@@ -226,6 +230,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 		else if (App->timeOut) {
 			attacking = false;
 			animation = &time_out;
+			position.y = 125;
 		}
 		else if (App->r_win) {
 			attacking = false;

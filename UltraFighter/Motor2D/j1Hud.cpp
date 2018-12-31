@@ -7,6 +7,7 @@
 #include "j1Fonts.h"
 #include "j1Render.h"
 #include "j1Player.h"
+#include "j1Player2.h"
 #include "j1Input.h"
 
 j1Hud::j1Hud() 
@@ -31,8 +32,6 @@ bool j1Hud::Start()
 	minutes = App->gui->CreateLabel(&labels_list, LABEL, 400, 80, text, "00 ");
 	C_lifepoints = 420;
 	R_lifepoints = 420;
-	R_PointsToSubstract = 0;
-	C_PointsToSubstract = 0;
 
 	animation = &idle;
 
@@ -69,13 +68,15 @@ bool j1Hud::Update(float dt)
 		}
 	}
 	
-	if (R_PointsToSubstract > 0) {
-		R_lifepoints--;
-		R_PointsToSubstract--;
+	if (App->entity->player->R_PointsToSubstract > 0) {
+		if (R_lifepoints > 0) 
+			R_lifepoints--;
+		App->entity->player->R_PointsToSubstract--;
 	}
-	if (C_PointsToSubstract > 0) {
-		C_lifepoints--;
-		C_PointsToSubstract--;
+	if (App->entity->player2->C_PointsToSubstract > 0) {
+		if(C_lifepoints > 0) 
+			C_lifepoints--;
+		App->entity->player2->C_PointsToSubstract--;
 	}
 
 	App->tex->UnLoad(seconds->sprites);
@@ -92,18 +93,16 @@ bool j1Hud::Update(float dt)
 	SDL_Rect c = { 0, 854 ,436,117 };
 	SDL_Rect r = { 0, 971 ,434,133 };
 	SDL_Rect v = { 0, 1105 ,70,44 };
-	SDL_Rect liferyu = { 465, 843 ,R_lifepoints,11 };
+	SDL_Rect liferyu = { 465, 843, R_lifepoints,11 };
 	SDL_Rect lifebad = { 0, 842 ,420,11 };
-	SDL_Rect lifechunli = { 465, 843 ,C_lifepoints,11 };
+	SDL_Rect lifechunli = { 465, 843, C_lifepoints,11 };
 	App->render->Blit(Ryu, 20, 20, &r , SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(Chunli, 540, 20, &c, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(vs, 470, 30, &v , SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(Ryulifegood, 20, 5, &lifebad, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
-	App->render->Blit(Ryulifebad, 20, 5, &lifechunli, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(Ryulifebad, 20, 5, &liferyu, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(Chunlilifegood, 555, 5, &lifebad, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
 	App->render->Blit(Chunlilifebad, 555, 5, &lifechunli, SDL_FLIP_NONE, 1.0f, 0.35f, 0, INT_MAX, INT_MAX, false);
-	
-
 
 	return true;
 }

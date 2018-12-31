@@ -44,8 +44,6 @@ public:
 
 	uint R_lifepoints;
 	uint C_lifepoints;
-	uint R_PointsToSubstract;
-	uint C_PointsToSubstract;
 
 
 	j1Label* seconds;
@@ -61,5 +59,6 @@ public:
 
 	p2List<j1Label*> labels_list;
 };
+
 
 #endif // __j1LHUD_H__

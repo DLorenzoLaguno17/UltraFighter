@@ -170,6 +170,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 				attacking = true;
 				punching = true;
 				App->audio->PlayFx(attackSoundmiss);
+				punches++;
 
 				if (crouching) {
 					animation = &crouch_m_punch;
@@ -197,6 +198,7 @@ bool j1Player::Update(float dt, bool do_logic) {
 				attacking = true;
 				kicking = true;
 				App->audio->PlayFx(attackSound);
+				kicks++;
 
 				if (crouching) {
 					if (App->input->GetKey(SDL_SCANCODE_D) == j1KeyState::KEY_REPEAT) {
@@ -391,8 +393,14 @@ bool j1Player::Save(pugi::xml_node& data) const {
 	pugi::xml_node b = data.append_child("blocks");
 	b.append_attribute("blocks") = blocks;
 
-	pugi::xml_node d = data.append_child("damage_taken");
-	d.append_attribute("damage_taken") = damage_taken;
+	pugi::xml_node d = data.append_child("damage_received");
+	d.append_attribute("damage_received") = damage_taken;
+
+	pugi::xml_node q = data.append_child("kicks");
+	q.append_attribute("kicks") = kicks;
+
+	pugi::xml_node r = data.append_child("punches");
+	r.append_attribute("punches") = punches;
 
 	return true;
 }

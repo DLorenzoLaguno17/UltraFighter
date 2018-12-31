@@ -13,12 +13,16 @@
 		<player>
 			<jumps jumps="0" />
 			<blocks blocks="0" />
-			<damage_taken damage_taken="1" />
+			<damage_received damage_received="0" />
+			<kicks kicks="0" />
+			<punches punches="1" />
 		</player>
 		<player2>
 			<jumps jumps="0" />
 			<blocks blocks="0" />
-			<damage_taken damage_taken="17" />
+			<damage_received damage_received="0" />
+			<kicks kicks="1" />
+			<punches punches="1" />
 		</player2>
 	</entityManager>
 	<collisions />

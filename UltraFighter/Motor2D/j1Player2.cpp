@@ -164,6 +164,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 				attacking = true;
 				punching = true;
 				App->audio->PlayFx(attackSound);
+				punches++;
 
 				if (crouching) {
 					animation = &crouch_l_punch;
@@ -191,6 +192,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 				attacking = true;
 				kicking = true;
 				App->audio->PlayFx(attackSound);
+				kicks++;
 
 				if (crouching) {
 					if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_REPEAT) {
@@ -228,6 +230,7 @@ bool j1Player2::Update(float dt, bool do_logic) {
 		else if (App->c_win) {
 			attacking = false;
 			animation = &win;
+			chun_li_wins++;
 		}
 		else if (receivedDmg) {
 
@@ -392,8 +395,17 @@ bool j1Player2::Save(pugi::xml_node& data) const {
 	pugi::xml_node b = data.append_child("blocks");
 	b.append_attribute("blocks") = blocks;
 
-	pugi::xml_node d = data.append_child("damage_taken");
-	d.append_attribute("damage_taken") = damage_taken;
+	pugi::xml_node d = data.append_child("damage_received");
+	d.append_attribute("damage_received") = damage_taken;
+
+	pugi::xml_node r = data.append_child("kicks");
+	r.append_attribute("kicks") = kicks;
+
+	pugi::xml_node q = data.append_child("punches");
+	q.append_attribute("punches") = punches;
+
+	pugi::xml_node w = data.append_child("Wins");
+	w.append_attribute("wins") = chun_li_wins;
 
 	return true;
 }
@@ -410,11 +422,6 @@ bool j1Player2::CleanUp() {
 
 	if (attackCollider != nullptr)
 		attackCollider->to_delete = true;
-
-	if (hud)
-		hud->CleanUp();
-
-	RELEASE(hud);
 
 	return true;
 }
@@ -479,6 +486,7 @@ void j1Player2::OnCollision(Collider* col_1, Collider* col_2)
 				if (life == 0) {
 					dead = true;
 					App->r_win = true;
+					App->entity->player->ryu_wins++;
 				}
 				else {
 					if (crouching) animation = &receive_damage_crouch;

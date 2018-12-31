@@ -55,6 +55,9 @@ bool j1SceneMenu::Start()
 		player_tex = App->tex->Load("textures/character/character.png");
 		harpy_tex = App->tex->Load("textures/enemies/harpy/harpy.png");
 		background = App->tex->Load("gui/MenuBackground.png");
+		Ryu = App->tex->Load("gui/menufaces.png");
+		Chunli = App->tex->Load("gui/menufaces.png");
+		vs = App->tex->Load("gui/Ui.png");
 
 		// Loading fonts
 		font = App->font->Load("fonts/PixelCowboy/PixelCowboy.otf", 8);
@@ -147,6 +150,14 @@ bool j1SceneMenu::Update(float dt)
 
 	SDL_Rect rect = { 0,0,1024,768 };
 	App->render->Blit(background, 0, 0, &rect, SDL_FLIP_NONE, 1.0f, 0.333333333333f);
+	
+	SDL_Rect c = { 325, 247 , 56 ,76 };
+	SDL_Rect r = { 10, 246 ,54, 77 };
+	SDL_Rect v = { 0, 1105 ,70,44 };
+	App->render->Blit(Ryu, 500, 20, &r, SDL_FLIP_NONE, 1.0f, 1, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(Chunli, 820, 180, &c, SDL_FLIP_HORIZONTAL, 1.0f, 1, 0, INT_MAX, INT_MAX, false);
+	App->render->Blit(vs, 690, 190, &v, SDL_FLIP_NONE, 1.0f, 0.5f, 0, INT_MAX, INT_MAX, false);
+
 
 	// Blitting the buttons and labels of the menu
 	for (p2List_item<j1Button*>* item = menuButtons.start; item != nullptr; item = item->next) {

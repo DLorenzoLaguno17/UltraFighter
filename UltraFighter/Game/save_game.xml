@@ -8,17 +8,20 @@
 	<menu />
 	<scene1>
 		<activated true="false" />
+		<TimeLeft bool="false" />
 	</scene1>
 	<entityManager>
 		<player>
 			<jumps jumps="0" />
 			<blocks blocks="0" />
-			<damage_taken damage_taken="1" />
+			<damage_taken damage_taken="0" />
+			<Wins wins="1" />
 		</player>
 		<player2>
 			<jumps jumps="0" />
 			<blocks blocks="0" />
 			<damage_taken damage_taken="17" />
+			<Wins wins="0" />
 		</player2>
 	</entityManager>
 	<collisions />

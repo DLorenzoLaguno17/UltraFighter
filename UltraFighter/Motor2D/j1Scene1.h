@@ -58,6 +58,7 @@ public:
 	int time_scene1;
 	bool changingScene = false;
 
+
 private:
 	SDL_Texture * debug_tex = nullptr;
 	SDL_Texture* gui_tex = nullptr;
@@ -78,7 +79,6 @@ public:
 	Animation couple_left;
 	Animation guys;
 	Animation couple_right;
-
 };
 
 #endif // __j1SCENE1_H__

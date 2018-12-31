@@ -19,6 +19,7 @@
 #include "j1Label.h"
 #include "j1Button.h"
 #include "j1Box.h"
+#include "j1Hud.h"
 
 #include "Brofiler/Brofiler.h"
 
@@ -121,6 +122,9 @@ bool j1Scene1::Start()
 
 		SDL_Rect rect3 = { 0,842,420,11 };
 		App->gui->CreateButton(&scene1Buttons, BUTTON, 8, 115, rect3, rect3, rect3, gui_tex, NO_FUNCTION, (j1UserInterfaceElement*)settings_window);
+		
+
+
 		startup_time.Start();
 	}
 
@@ -243,19 +247,21 @@ bool j1Scene1::PostUpdate()
 
 bool j1Scene1::Load(pugi::xml_node& node)
 {
-	pugi::xml_node activated = node.child("activated");
-
-	bool scene_activated = activated.attribute("true").as_bool();
-
 	return true;
 }
 
 bool j1Scene1::Save(pugi::xml_node& node) const
 {
 	pugi::xml_node activated = node.append_child("activated");
-
 	activated.append_attribute("true") = active;
 
+	pugi::xml_node g = node.append_child("TimeLeft");
+	if (App->entity->player->hud->timeleft >= 120)
+		g.append_attribute("bool") = true;
+	else 
+		g.append_attribute("bool") = false;
+
+	
 	return true;
 }
 

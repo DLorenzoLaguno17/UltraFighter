@@ -63,6 +63,9 @@ private:
 	SDL_Texture* player_tex = nullptr;
 	SDL_Texture* harpy_tex = nullptr;
 	SDL_Texture* background = nullptr;
+	SDL_Texture* Ryu = nullptr;
+	SDL_Texture* Chunli = nullptr;
+	SDL_Texture* vs = nullptr;
 
 	_TTF_Font* font = nullptr;
 

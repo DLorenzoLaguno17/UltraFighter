@@ -93,11 +93,13 @@ public:
 
 	uint R_PointsToSubstract = 0;
 	uint life = 840;
+	uint ryu_wins = 0;
 
 	Collider* attackCollider = nullptr;
 	uint currentTime, lastTime = 0;
 
 	uint jumps, blocks, damage_taken = 0;
+	uint kicks = 0, punches = 0;
 
 	j1Hud* hud = nullptr;
 

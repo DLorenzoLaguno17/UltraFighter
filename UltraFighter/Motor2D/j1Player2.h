@@ -89,6 +89,7 @@ public:
 
 	uint currentJumps;
 	uint initialJumps;
+	uint C_PointsToSubstract = 0;
 
 	Collider* attackCollider = nullptr;
 

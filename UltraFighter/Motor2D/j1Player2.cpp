@@ -421,6 +421,8 @@ void j1Player2::OnCollision(Collider* col_1, Collider* col_2)
 				receivedDmg = true;
 				attacking = false;
 
+				C_PointsToSubstract += 60;
+
 				if (crouching) animation = &receive_damage_crouch;
 				else animation = &receive_damage_idle;
 			}

@@ -33,12 +33,12 @@ j1Player2::j1Player2(int x, int y, ENTITY_TYPES type) : j1Entity(x, y, ENTITY_TY
 	forward_m_punch.LoadAnimations2("forward_m_punch");
 	forward_l_punch.LoadAnimations2("forward_l_punch");
 	forward_h_punch.LoadAnimations2("forward_h_punch");
-	forward_m_kick.LoadAnimations2("l_m_kick");
+	forward_m_kick.LoadAnimations2("m_kick");
 	high_kick.LoadAnimations2("h_kick");
 	forward_l_kick.LoadAnimations2("forward_l_kick");
 	melee_m_kick.LoadAnimations2("forward_m_kick");
 	forward_h_kick.LoadAnimations2("forward_h_kick");
-	crouch_l_punch.LoadAnimations2("crouch_l_punch");
+	crouch_l_punch.LoadAnimations2("crouch_l_m_h_punch");
 	crouch_m_punch.LoadAnimations2("crouch_m_punch");
 	crouch_h_punch.LoadAnimations2("crouch_h_punch");
 	crouch_l_kick.LoadAnimations2("crouch_l_kick");
@@ -156,21 +156,21 @@ bool j1Player2::Update(float dt, bool do_logic) {
 				App->audio->PlayFx(attackSound);
 
 				if (crouching) {
-					animation = &crouch_m_punch;
-					attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 40, 26, 15 }, COLLIDER_ATTACK2, App->entity);
+					animation = &crouch_l_punch;
+					attackCollider = App->collisions->AddCollider({ (int)position.x - 24, (int)position.y + 43, 26, 15 }, COLLIDER_ATTACK2, App->entity); //DONE
 				}
 				else {
 					if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_REPEAT) {
-						animation = &m_h_punch;
-						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 17, 35, 15 }, COLLIDER_ATTACK2, App->entity);
+						animation = &forward_l_punch;
+						attackCollider = App->collisions->AddCollider({ (int)position.x - 10, (int)position.y + 23, 20, 20 }, COLLIDER_ATTACK2, App->entity); //DONE
 					}
 					else if (App->input->GetKey(SDL_SCANCODE_UP) == j1KeyState::KEY_REPEAT) {
 						animation = &forward_h_punch;
-						attackCollider = App->collisions->AddCollider({ (int)position.x + 45, (int)position.y - 10, 15, 35 }, COLLIDER_ATTACK2, App->entity);
+						attackCollider = App->collisions->AddCollider({ (int)position.x - 10, (int)position.y + 30, 20, 20 }, COLLIDER_ATTACK2, App->entity); //DONE
 					}
 					else {
 						animation = &short_punch;
-						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 17, 25, 15 }, COLLIDER_ATTACK2, App->entity);
+						attackCollider = App->collisions->AddCollider({ (int)position.x - 10, (int)position.y, 25, 30 }, COLLIDER_ATTACK2, App->entity); //DONE
 					}
 				}
 			}
@@ -185,28 +185,25 @@ bool j1Player2::Update(float dt, bool do_logic) {
 				if (crouching) {
 					if (App->input->GetKey(SDL_SCANCODE_LEFT) == j1KeyState::KEY_REPEAT) {
 						animation = &crouch_m_kick;
-						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 52, 15 }, COLLIDER_ATTACK2, App->entity);
+						attackCollider = App->collisions->AddCollider({ (int)position.x - 27, (int)position.y + 65, 30, 25 }, COLLIDER_ATTACK2, App->entity); //DONE
 					}
-					else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_REPEAT) {
+				    else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == j1KeyState::KEY_REPEAT) {
 						animation = &spin_kick;
-						attackCollider = App->collisions->AddCollider({ (int)position.x + 37, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK2, App->entity);
+						attackCollider = App->collisions->AddCollider({ (int)position.x - 25, (int)position.y + 30, 35, 22 }, COLLIDER_ATTACK2, App->entity); //DONE
 					}
 					else {
 						animation = &crouch_l_kick;
-						attackCollider = App->collisions->AddCollider({ (int)position.x - 33, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK2, App->entity);
+						attackCollider = App->collisions->AddCollider({ (int)position.x - 33, (int)position.y + 75, 35, 15 }, COLLIDER_ATTACK2, App->entity); //DONE
 					}
 				}
 				else {
-					if (0 /*asdfasdf*/) {
-						animation = &forward_l_kick;
-					}
-					else if (App->input->GetKey(SDL_SCANCODE_UP) == j1KeyState::KEY_REPEAT) {
+					if (App->input->GetKey(SDL_SCANCODE_UP) == j1KeyState::KEY_REPEAT) {
 						animation = &high_kick;
-						attackCollider = App->collisions->AddCollider({ (int)position.x + 50, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK2, App->entity);
+						attackCollider = App->collisions->AddCollider({ (int)position.x - 5, (int)position.y - margin.y, 25, 40 }, COLLIDER_ATTACK2, App->entity);
 					}
 					else {
 						animation = &forward_m_kick;
-						attackCollider = App->collisions->AddCollider({ (int)position.x + 50, (int)position.y + margin.y, playerSize.x, playerSize.y }, COLLIDER_ATTACK2, App->entity);
+						attackCollider = App->collisions->AddCollider({ (int)position.x - 5, (int)position.y - margin.y, 25, 40 }, COLLIDER_ATTACK2, App->entity); //DONE little rough
 					}
 				}
 
@@ -233,36 +230,41 @@ bool j1Player2::Update(float dt, bool do_logic) {
 			if (animation == &m_h_punch)
 				Draw(r, true, 0, -12);
 			else if (animation == &short_punch)
-				Draw(r, true, 0, -12);
+				Draw(r, true, 0, -5);
 			else if (animation == &forward_h_punch)
-				Draw(r, true, 0, -12);
-			else if (animation == &crouch_m_punch)
-				Draw(r, true, 0, -21);
+				Draw(r, true, 0, 12);
+			else if (animation == &forward_l_punch)
+				Draw(r, true, 0, 12);
+			else if (animation == &crouch_l_punch)
+				Draw(r, true, -10, 27);
 			else if (animation == &forward_m_kick)
-				Draw(r, true, 0, -18);
+				Draw(r, true, 0, 7);
 			else if (animation == &forward_l_kick)
 				Draw(r, true, 0, -18);
 			else if (animation == &crouch_m_kick)
-				Draw(r, true, 0, -21);
+				Draw(r, true, -12, 33);
 			else if (animation == &crouch_l_kick)
 				Draw(r, true, -12, 37);
 			else if (animation == &spin_kick)
-				Draw(r, true, 0, -21);
+				Draw(r, true, -12, 30);
 			else if (animation == &high_kick)
-				Draw(r, true, 0, -21);
+				Draw(r, true, 0, 5);
 			}
 
 			// Punch management
-			if (crouch_m_punch.Finished() || m_h_punch.Finished() || short_punch.Finished()
-				|| forward_h_punch.Finished()) {
+			if (crouch_l_punch.Finished() || m_h_punch.Finished() || short_punch.Finished()
+				|| forward_h_punch.Finished() || forward_l_punch.Finished()) {
 
 				crouch_m_punch.Reset();
 				m_h_punch.Reset();
 				short_punch.Reset();
+				crouch_l_punch.Reset();
+				forward_l_punch.Reset();
 				attacking = false;
 				forward_h_punch.Reset();
 				punching = false;
 				attackCollider->to_delete = true;
+			
 
 				if (attackCollider != nullptr)
 					attackCollider->to_delete = true;
